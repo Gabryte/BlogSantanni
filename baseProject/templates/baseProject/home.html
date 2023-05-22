@@ -25,6 +25,16 @@
         <nav class="nav_bar">
             <h3>Top Topics</h3>
             <hr/>
+
+            <div>
+                <a href="{% url 'home' %}">All</a>
+            </div>
+
+            {% for topic in topics %}
+            <div>
+                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}</a>
+            </div>
+            {% endfor %}
         </nav>
     <section class="rooms">
         <a href="{% url 'create-room' %}">Create a Room for blogging</a>

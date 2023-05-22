@@ -1,2 +1,27 @@
+<style>
+    header{
+        background-color: #ccc;
+        box-shadow: #333 0px 0px 10px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    header a{
+        text-decoration: none;
+        color: #333;
+        font-size: 100%;
+        padding: 5px;
+        font-weight: bold;
+    }
+    header form{
+        padding: 5px;
+    }
+</style>
+<header>
 <a href="/">Logo</a>
+    <form method="GET" action="{% url 'home' %}">
+        <input type="text" name="q" placeholder="Search Rooms...">
+    </form>
 <hr/>
+</header>
