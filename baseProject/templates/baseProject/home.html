@@ -1,13 +1,38 @@
 {% extends 'main.html' %}
 {% block content %}
-<h1>Home</h1>
-    <div>
+<style>
+    .home-wrapper{
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+    .nav_bar{
+        width: 20%;
+        height: 100%;
+        background-color: #f1f1f1;
+        padding: 10px;
+    }
+    .rooms{
+        background-color: #f1f1f1;
+        width: 80%;
+        height: 100%;
+        padding: 10px;
+    }
+</style>
+<h1>TeachOnlineBlog</h1>
+    <div class="home-wrapper">
+        <nav class="nav_bar">
+            <h3>Top Topics</h3>
+            <hr/>
+        </nav>
+    <section class="rooms">
         <a href="{% url 'create-room' %}">Create a Room for blogging</a>
         <div>
             {% for room in rooms %}
             <div>
                 <a href="{% url 'update-room' room.id %}">Edit</a>
-                <a href="">Delete</a>
+                <a href="{% url 'delete-room' room.id %}">Delete</a>
                 <span>@{{room.host.username}}</span>
                 <h5>{{ room.id }} -- <a href="{% url 'room' room.id %}">{{ room.name }}</a></h5>
                 <small>{{room.topic.name}}</small>
@@ -15,5 +40,6 @@
             </div>
             {% endfor %}
         </div>
+    </section>
     </div>
 {% endblock content %}
