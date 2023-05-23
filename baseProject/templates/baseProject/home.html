@@ -7,15 +7,21 @@
         align-items: stretch;
         justify-content: stretch;
     }
+    .home-wrapper aside{
+        width:25%;
+        height: 100%;
+        background-color: #f1f1f1;
+        padding: 10px;
+    }
     .nav_bar{
-        width: 20%;
+        width: 25%;
         height: 100%;
         background-color: #f1f1f1;
         padding: 10px;
     }
     .rooms{
         background-color: #f1f1f1;
-        width: 80%;
+        width: 50%;
         height: 100%;
         padding: 10px;
     }
@@ -26,37 +32,15 @@
     {% endif %}
     <div class="home-wrapper">
         <nav class="nav_bar">
-            <h3>Top Topics</h3>
-            <hr/>
-
-            <div>
-                <a href="{% url 'home' %}">All</a>
-            </div>
-
-            {% for topic in topics %}
-            <div>
-                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}</a>
-            </div>
-            {% endfor %}
+            {% include 'baseProject/topic_inside.html' %}
         </nav>
     <section class="rooms">
         <h5>{{ rooms_count }} rooms available</h5>
         <a href="{% url 'create-room' %}">Create a Room for blogging</a>
-        <div>
-            {% for room in rooms %}
-            <div>
-                {% if request.user == room.host %}
-                <a href="{% url 'update-room' room.id %}">Edit</a>
-                <a href="{% url 'delete-room' room.id %}">Delete</a>
-                {% endif %}
-                <span>@{{room.host.username}}</span>
-                <h5>{{ room.id }} -- <a href="{% url 'room' room.id %}">{{ room.name }}</a></h5>
-                <p>{{ room.description }}</p>
-                <small>{{room.topic.name}}</small>
-                <hr/>
-            </div>
-            {% endfor %}
-        </div>
+        {% include 'baseProject/central_home.html' %}
     </section>
+    <aside>
+        {% include 'baseProject/feed_inside.html' %}
+    </aside>
     </div>
 {% endblock content %}

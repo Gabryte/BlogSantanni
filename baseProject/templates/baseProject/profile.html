@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <style>
+        .profile-container {
+            display: flex;
+            flex-direction: row;
+            width: 50%;
+            align-content: center;
+            height: 100%;
+        }
+    </style>
+    <h1>{{ user.username }}</h1>
+    <section class="profile-container">
+        <div>
+
+        </div>
+        <div>
+            {% include 'baseProject/central_home.html' %}
+        </div>
+        <div>
+
+        </div>
+    </section>
+{% endblock content %}

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Room, Topic
+from .models import Room, Topic, Message
 from .forms import RoomForm
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -62,12 +62,31 @@ def home(request):
     topic = Topic.objects.all()
 
     rooms_count = rooms.count()
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count}
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)) #TODO Modify get all the follower messages
+    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages}
     return render(request, 'baseProject/home.html',context)
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    context = {'room':room}
+    room_messages = room.message_set.all()
+    participants = room.participants.all()
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body')
+        )
+        room.participants.add(request.user)
+        return redirect('room', pk=room.id)
+    context = {'room':room, 'room_messages':room_messages, 'participants':participants}
     return render(request, 'baseProject/room.html',context)
+
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    rooms = user.room_set.all()
+    context = {'user':user, 'rooms':rooms}
+    return render(request, 'baseProject/profile.html',context)
+
 
 @login_required(login_url='loginPage')
 def createRoom(request):
@@ -107,4 +126,18 @@ def deleteRoom(request, pk):
         room.delete()
         return redirect('home')
     context = {'obj':room}
+    return render(request, 'baseProject/delete.html',context)
+
+
+@login_required(login_url='loginPage')
+def deleteComment(request, pk):
+
+    message = Message.objects.get(id=pk)
+    if request.user != message.user:
+        return HttpResponse('You are not allowed here!')
+
+    if request.method == "POST":
+        message.delete()
+        return redirect('home')
+    context = {'obj':message}
     return render(request, 'baseProject/delete.html',context)
