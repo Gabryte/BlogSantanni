@@ -1,3 +1,4 @@
+{% load static %}
 <style>
     header{
         background-color: #ccc;
@@ -19,7 +20,7 @@
     }
 </style>
 <header>
-<a href="/">Logo</a>
+<a href="/"><img src="{% static 'images/tower.png' %}"></a>
     <form method="GET" action="{% url 'home' %}">
         <input type="text" name="q" placeholder="Search Rooms...">
     </form>

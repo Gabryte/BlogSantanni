@@ -84,7 +84,9 @@ def room(request, pk):
 def userProfile(request, pk):
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
-    context = {'user':user, 'rooms':rooms}
+    room_messages = user.message_set.all()
+    topics = Topic.objects.all()
+    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics}
     return render(request, 'baseProject/profile.html',context)
 
 
@@ -94,7 +96,9 @@ def createRoom(request):
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
-            form.save()
+            room = form.save(commit=False)
+            room.host = request.user
+            room.save()
             return redirect('home')
     context = {'form':form}
     return render(request, 'baseProject/room_form.html',context)

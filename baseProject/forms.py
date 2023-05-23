@@ -5,5 +5,6 @@ from .models import Room, Topic, Message
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields = ['host','name', 'topic', 'description']
+        fields = "__all__"
+        exclude = ['host','participants']
 

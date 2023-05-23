@@ -3,7 +3,7 @@
         {% for activity in room_messages %}
         <div>
             <p>{{ activity.message }}</p>
-            <small>@{{activity.user.username}} -- {{activity.created|timesince}}</small>
+            <small><a href="{% url 'user-profile' activity.user.id %}">@{{activity.user.username}}</a> -- {{activity.created|timesince}}</small>
             <small>replied to "{{ activity.room }}"</small>
             <p>{{ activity }}</p>
             {% if request.user == activity.user %}
