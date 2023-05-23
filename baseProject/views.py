@@ -4,10 +4,11 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+
 
 # Create your views here.
 
@@ -93,30 +94,44 @@ def userProfile(request, pk):
 @login_required(login_url='loginPage')
 def createRoom(request):
     form = RoomForm()
+    topics = Topic.objects.all()
+
     if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
-    context = {'form':form}
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)#Creates the topic if doesn't find the topic
+        #form = RoomForm(request.POST)
+        #if form.is_valid():
+        #    room = form.save(commit=False)
+        #    room.host = request.user
+        #    room.save()
+        #    return redirect('home')
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+        )
+        return redirect('home')
+    context = {'form':form, 'topics':topics}
     return render(request, 'baseProject/room_form.html',context)
 
 @login_required(login_url='loginPage')
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
-
+    topics = Topic.objects.all()
     if request.user != room.host:
         return HttpResponse('You are not allowed here!')
 
     if request.method == 'POST':
-        form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    context = {'form':form}
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)  # Creates the topic if doesn't find the topic
+        room.name = request.POST.get('name')
+        room.description = request.POST.get('description')
+        room.topic = topic
+        room.save()
+        return redirect('home')
+    context = {'form':form, 'topics':topics, 'room':room}
     return render(request, 'baseProject/room_form.html',context)
 
 @login_required(login_url='loginPage')
@@ -145,3 +160,14 @@ def deleteComment(request, pk):
         return redirect('home')
     context = {'obj':message}
     return render(request, 'baseProject/delete.html',context)
+
+@login_required(login_url='loginPage')
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+    return render(request, 'baseProject/update-user.html',{'form':form})

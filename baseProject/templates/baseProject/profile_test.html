@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    <style>
+        .profile-container {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+        }
+        .profile-container .left {
+            width: 20%;
+            height: 100%;
+        }
+        .profile-container .middle {
+            width: 60%;
+            height: 100%;
+        }
+        .profile-container .right {
+            width: 20%;
+            height: 100%;
+        }
+    </style>
+    <h1>{{ user.username }}</h1>
+    <section class="profile-container">
+        <div class="left">
+            {% include 'baseProject/topic_inside.html' %}
+        </div>
+        <div class="middle">
+            {% include 'baseProject/central_home.html' %}
+        </div>
+        <div class="right">
+            {% include 'baseProject/feed_inside.html' %}
+        </div>
+    </section>
+{% endblock content %}

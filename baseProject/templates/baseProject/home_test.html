@@ -1,0 +1,46 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    .home-wrapper{
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+    .home-wrapper aside{
+        width:25%;
+        height: 100%;
+        background-color: #f1f1f1;
+        padding: 10px;
+    }
+    .nav_bar{
+        width: 25%;
+        height: 100%;
+        background-color: #f1f1f1;
+        padding: 10px;
+    }
+    .rooms{
+        background-color: #f1f1f1;
+        width: 50%;
+        height: 100%;
+        padding: 10px;
+    }
+</style>
+<h1>TeachOnlineBlog</h1>
+    {% if request.user.is_authenticated %}
+    <p>Hello {{ request.user }}</p>
+    {% endif %}
+    <div class="home-wrapper">
+        <nav class="nav_bar">
+            {% include 'baseProject/topic_inside.html' %}
+        </nav>
+    <section class="rooms">
+        <h5>{{ rooms_count }} rooms available</h5>
+        <a href="{% url 'create-room' %}">Create a Room for blogging</a>
+        {% include 'baseProject/central_home.html' %}
+    </section>
+    <aside>
+        {% include 'baseProject/feed_inside.html' %}
+    </aside>
+    </div>
+{% endblock content %}
