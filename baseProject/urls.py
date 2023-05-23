@@ -10,4 +10,6 @@ urlpatterns = [
     path('update-room/<str:pk>', views.updateRoom, name='update-room'),
     path('delete-room/<str:pk>', views.deleteRoom, name='delete-room'),
     path('login/', views.loginPage, name='loginPage'),
+    path('logout/', views.logoutUser, name='logout'),
+    path('register/', views.registerUser, name='register'),
 ]

@@ -5,9 +5,5 @@ from .models import Room, Topic, Message
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields = '__all__'
+        fields = ['host','name', 'topic', 'description']
 
-class UserForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ['username','password']

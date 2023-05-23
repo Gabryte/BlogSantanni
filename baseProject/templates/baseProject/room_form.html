@@ -1,15 +1,11 @@
 {% extends 'main.html' %}
-{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
 
 {% block content %}
     <div>
         <form method="POST" action="">
             {% csrf_token %}
-            <label for="email">Email</label>
-            <input type="email" name="email" placeholder="Enter Email..." id="email">
-            <label for="password">Password</label>
-            <input type="password" name="password" placeholder="Enter Password..." id="password">
-            <button type="submit">Submit</button>
+            {{ form|crispy }}
         </form>
     </div>
 {% endblock content %}

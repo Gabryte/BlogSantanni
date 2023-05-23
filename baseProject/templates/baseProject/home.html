@@ -21,6 +21,9 @@
     }
 </style>
 <h1>TeachOnlineBlog</h1>
+    {% if request.user.is_authenticated %}
+    <p>Hello {{ request.user }}</p>
+    {% endif %}
     <div class="home-wrapper">
         <nav class="nav_bar">
             <h3>Top Topics</h3>
@@ -42,8 +45,10 @@
         <div>
             {% for room in rooms %}
             <div>
+                {% if request.user == room.host %}
                 <a href="{% url 'update-room' room.id %}">Edit</a>
                 <a href="{% url 'delete-room' room.id %}">Delete</a>
+                {% endif %}
                 <span>@{{room.host.username}}</span>
                 <h5>{{ room.id }} -- <a href="{% url 'room' room.id %}">{{ room.name }}</a></h5>
                 <p>{{ room.description }}</p>
