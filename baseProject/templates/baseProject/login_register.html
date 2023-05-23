@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <section>
+    <form method="POST" action="">
+        {% csrf_token %}
+
+        <label for="username">Username</label>
+        <input type="text" name="username" placeholder="Enter UserName..." id="username">
+        <label for="password">Password</label>
+        <input type="password" name="password" placeholder="Enter Password..." id="password">
+        <input type="submit" value="Login">
+    </form>
+    </section>
+{% endblock %}

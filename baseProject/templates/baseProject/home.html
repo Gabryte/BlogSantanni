@@ -37,6 +37,7 @@
             {% endfor %}
         </nav>
     <section class="rooms">
+        <h5>{{ rooms_count }} rooms available</h5>
         <a href="{% url 'create-room' %}">Create a Room for blogging</a>
         <div>
             {% for room in rooms %}
@@ -45,6 +46,7 @@
                 <a href="{% url 'delete-room' room.id %}">Delete</a>
                 <span>@{{room.host.username}}</span>
                 <h5>{{ room.id }} -- <a href="{% url 'room' room.id %}">{{ room.name }}</a></h5>
+                <p>{{ room.description }}</p>
                 <small>{{room.topic.name}}</small>
                 <hr/>
             </div>
