@@ -4,11 +4,11 @@
           </div>
           <ul class="listTopics">
             <li>
-                <a href="{% url 'home'  %}" class="active">All <span>{{ topics.count }}</span> <span>{{total_participants}}</span></a>
+                <a href="{% url 'home'  %}" class="active">All <span>{{ topics.count }}</span><span>{{total_participants}}</span></a>
             </li>
               {% for topic in topics %}
             <li>
-                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }} <span>{{topic.num_participants}}</span> <span>{{ topic.room_set.all.count }}</span></a>
+                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}<span>{{topic.num_participants}}</span><span>{{ topic.room_set.all.count }}</span></a>
             </li>
               {% endfor %}
           </ul>

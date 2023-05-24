@@ -135,14 +135,17 @@ def updateRoom(request, pk):
     return render(request, 'baseProject/room_form.html',context)
 
 @login_required(login_url='loginPage')
-def deleteRoom(request, pk):
+def deleteRoomAndTopicRelatedIf(request, pk):
 
     room = Room.objects.get(id=pk)
+    topic = room.topic
     if request.user != room.host:
         return HttpResponse('You are not allowed here!')
 
     if request.method == "POST":
         room.delete()
+        if (topic.room_set.count() == 0):
+            topic.delete()
         return redirect('home')
     context = {'obj':room}
     return render(request, 'baseProject/delete.html',context)
