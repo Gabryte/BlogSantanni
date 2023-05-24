@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 ]
+AUTH_USER_MODEL = 'baseProject.User'
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
