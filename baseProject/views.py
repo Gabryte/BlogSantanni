@@ -60,13 +60,14 @@ def registerUser(request):
 def userSearch(request):
     page = 'userSearch'
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    users = User.objects.filter(Q(username__icontains=q) | Q(email__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q) | Q(status__icontains=q))
+    users = User.objects.filter(Q(username__icontains=q) | Q(email__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
     num = 5
     topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by(
         '-num_participants', '-num_rooms')[0:num]
     total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
     rooms_count = 0
-    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+    room_messages = None
+    searched_users_messages = Message.objects.filter(Q(user__username__icontains=q) | Q(user__email__icontains=q) | Q(user__name__icontains=q) | Q(user__surname__icontains=q))
 
     user = request.user
     if user.is_authenticated:
@@ -75,7 +76,7 @@ def userSearch(request):
     else:
         friend_messages = None
 
-    context = {'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
+    context = {'searched_users_messages':searched_users_messages,'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
                "total_participants": total_participants, "friend_messages": friend_messages, "page": page}
     return render(request, 'baseProject/home.html', context)
 
