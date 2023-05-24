@@ -174,6 +174,6 @@ def updateUser(request):
 
 def argumentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    arguments = Topic.objects.filter(name__icontains=q)
+    arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:8]
     context={'arguments':arguments}
     return render(request,'baseProject/arguments.html',context)
