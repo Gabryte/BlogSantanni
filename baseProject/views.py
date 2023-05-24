@@ -3,10 +3,10 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic, Message, User
-from .forms import RoomForm, UserForm
+from .forms import RoomForm, UserForm,UserRegistrationForm
 from django.db.models import Q, Count
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+
 
 
 # Create your views here.
@@ -42,9 +42,9 @@ def registerUser(request):
     #if request.user.is_authenticated:
     #    return redirect('home')
     #context={'page':page}
-    form = UserCreationForm()
+    form = UserRegistrationForm()
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.username = user.username.lower()
@@ -156,7 +156,7 @@ def deleteComment(request, pk):
 
     if request.method == "POST":
         message.delete()
-        return redirect('home')
+        return redirect('home')#TODO CHANGE
     context = {'obj':message}
     return render(request, 'baseProject/delete.html',context)
 
@@ -165,7 +165,7 @@ def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
+        form = UserForm(request.POST,request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('user-profile', pk=user.id)
