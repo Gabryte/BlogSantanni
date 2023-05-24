@@ -28,6 +28,7 @@ def loginPage(request):
         if user is not None:
             login(request, user)
             user.is_active = True
+            user.save()
             return redirect('home')
         else:
             messages.error(request, 'Email or password is incorrect')
@@ -37,6 +38,8 @@ def loginPage(request):
 
 def logoutUser(request):
     logout(request)
+    request.user.is_active = False
+    request.user.save()
     return redirect('loginPage')
 
 def registerUser(request):
