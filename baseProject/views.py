@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic, Message
 from .forms import RoomForm, UserForm
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
@@ -60,7 +60,7 @@ def registerUser(request):
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
-    topic = Topic.objects.all()
+    topic = Topic.objects.annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:4]
 
     rooms_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)) #TODO Modify get all the follower messages
@@ -171,3 +171,9 @@ def updateUser(request):
             form.save()
             return redirect('user-profile', pk=user.id)
     return render(request, 'baseProject/update-user.html',{'form':form})
+
+def argumentsPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    arguments = Topic.objects.filter(name__icontains=q)
+    context={'arguments':arguments}
+    return render(request,'baseProject/arguments.html',context)

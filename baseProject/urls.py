@@ -15,4 +15,5 @@ urlpatterns = [
     path('delete-comment/<str:pk>', views.deleteComment, name='delete-comment'),
     path('profile/<str:pk>', views.userProfile, name='user-profile'),
     path('update-user/', views.updateUser, name='update-user'),
+    path('argumentsAkaTopics/',views.argumentsPage,name="arguments"),
 ]
