@@ -21,4 +21,5 @@ import baseProject
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('baseProject.urls')),
+    path('api/',include('baseProject.api.urls'))
 ]
