@@ -172,6 +172,12 @@ def updateUser(request):
             return redirect('user-profile', pk=user.id)
     return render(request, 'baseProject/update-user.html',{'form':form})
 
+
+def usersMessages(request):
+    channel_messages = Message.objects.all()[0:3]
+    return render(request, 'baseProject/messagesFromBlogging.html',{'room_messages':channel_messages})
+
+
 def argumentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:8]
