@@ -56,6 +56,12 @@ def registerUser(request):
             messages.error(request, 'Username already exists or the password given does not match the password creation criteria')
     context = {'form':form}
     return render(request, 'baseProject/loginAndRegister.html',context)
+
+def userSearch(request):
+    page = 'home'
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    users = User.objects.filter(Q(username__icontains=q) | Q(email__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q) | Q(status__icontains=q))
+
 def home(request):
     page = 'home'
     q = request.GET.get('q') if request.GET.get('q') != None else ''

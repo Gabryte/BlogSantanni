@@ -4,6 +4,7 @@ from django.contrib.auth.models import  AbstractUser
 # Create your models here.
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
+    surname = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True,null=True)
     status = models.TextField(null=True)
     friends = models.ManyToManyField('self', symmetrical=True, blank=True,null=True)
