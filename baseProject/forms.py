@@ -16,5 +16,5 @@ class UserRegistrationForm(UserCreationForm):
 class UserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['icon','name','username','email','status']
+        fields = ['icon','name','username','email','status','showFriendsMessages']
 
