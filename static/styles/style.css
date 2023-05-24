@@ -548,11 +548,20 @@ a {
   font-weight: 500;
   color: var(--obscure-color-light);
 }
-
-
+/*
+.verticalSection{
+  overflow-y: auto;
+  height: 10px;
+  width:100%
+}
+*/
 
 .listTopics {
   list-style: none;
+  overflow-y: auto;
+  height: 330px;
+  max-height: 330px;
+  width: 100%;
 }
 
 .listTopics li a {
@@ -572,8 +581,8 @@ a {
 .listTopics li a span {
   padding: 0.5rem 1rem;
   background-color: var(--obscure-color);
-  border-radius: 3px;
-  font-size: 1.3rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: 1px;
 }
@@ -988,7 +997,12 @@ a {
 .room__author:hover {
   text-decoration: underline;
 }
-
+/*
+.topics{
+  height: 100px;
+  max-height: 100px;
+}
+*/
 .room__topics {
   padding: 0.5rem 1.5rem;
   background: var(--obscure-color-light);

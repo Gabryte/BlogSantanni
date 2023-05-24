@@ -18,18 +18,18 @@ def loginPage(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(email=email)
         except:
-            messages.error(request, 'Username does not exist')
-        user = authenticate(request, username=username, password=password)
+            messages.error(request, 'Email does not exist')
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Username or password is incorrect')
+            messages.error(request, 'Email or password is incorrect')
 
     context = {'page':page}
     return render(request, 'baseProject/loginAndRegister.html',context)
@@ -59,11 +59,12 @@ def registerUser(request):
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
-    topic = Topic.objects.annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:4]
+    num = 5
+    topic = Topic.objects.annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:num]
 
     rooms_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)) #TODO Modify get all the follower messages
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages}
+    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num}
     return render(request, 'baseProject/home.html',context)
 def room(request, pk):
     room = Room.objects.get(id=pk)
