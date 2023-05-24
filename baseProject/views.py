@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Room, Topic, Message, User
 from .forms import RoomForm, UserForm,UserRegistrationForm
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Sum
 from django.contrib.auth.decorators import login_required
 
 
@@ -60,11 +60,11 @@ def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
     num = 5
-    topic = Topic.objects.annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:num]
-
+    topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by('-num_participants', '-num_rooms')[0:num]
+    total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
     rooms_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)) #TODO Modify get all the follower messages
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num}
+    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants}
     return render(request, 'baseProject/home.html',context)
 def room(request, pk):
     room = Room.objects.get(id=pk)
@@ -180,6 +180,6 @@ def usersMessages(request):
 
 def argumentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')[0:8]
+    arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')
     context={'arguments':arguments}
     return render(request,'baseProject/arguments.html',context)
