@@ -7,7 +7,7 @@ class User(AbstractUser):
     surname = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True,null=True)
     status = models.TextField(null=True)
-    friends = models.ManyToManyField('self', symmetrical=True, blank=True,null=True)
+    friends = models.ManyToManyField('self', symmetrical=True, blank=True)
     icon = models.ImageField(null=True, default="userBase.svg")
     showFriendsMessages = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'

@@ -1,0 +1,16 @@
+{% for user in users %}
+<div class="RoomIteratedLister">
+            <div class="ChannelListerRoomHeaderBlock">
+              <a href="{% url 'user-profile' user.id %}" class="HostRoomChannelLister">
+                <div class="avatar avatar--small">
+                  <img src="{{ user.icon.url }}" />
+                </div>
+                <span>@{{ user.username }}</span>
+              </a>
+            </div>
+            <div class="ContentChannelRoomList">
+              <a href="{% url 'user-profile' user.id %}">{{ user.name }}</a>
+              <p>{{ user.email }}</p>
+            </div>
+</div
+{% endfor %}

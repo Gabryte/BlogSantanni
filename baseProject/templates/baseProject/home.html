@@ -42,7 +42,11 @@
               Create Room
             </a>
           </div>
+            {% if page == 'home' %}
           {% include 'baseProject/central_home.html' %}
+            {% else %}
+                {% include 'baseProject/central_home_for_usersearch.html' %}
+            {% endif %}
         </div>
         <!-- Room List End -->
 

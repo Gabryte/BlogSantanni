@@ -17,4 +17,5 @@ urlpatterns = [
     path('update-user/', views.updateUser, name='update-user'),
     path('argumentsAkaTopics/',views.argumentsPage,name="arguments"),
     path('messagesFromUsers/',views.usersMessages,name="messages"),
+    path('userSearch/',views.userSearch,name="userSearch")
 ]
