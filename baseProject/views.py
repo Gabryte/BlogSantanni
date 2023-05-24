@@ -33,7 +33,7 @@ def loginPage(request):
             messages.error(request, 'Username or password is incorrect')
 
     context = {'page':page}
-    return render(request, 'baseProject/login_register.html',context)
+    return render(request, 'baseProject/loginAndRegister.html',context)
 
 def logoutUser(request):
     logout(request)
@@ -54,9 +54,9 @@ def registerUser(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'An error has occurred during registration')
+            messages.error(request, 'Username already exists or the password given does not match the password creation criteria')
     context = {'form':form}
-    return render(request, 'baseProject/login_register.html',context)
+    return render(request, 'baseProject/loginAndRegister.html',context)
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
