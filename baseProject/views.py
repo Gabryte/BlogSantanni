@@ -27,8 +27,6 @@ def loginPage(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            user.is_active = True
-            user.save()
             return redirect('home')
         else:
             messages.error(request, 'Email or password is incorrect')
@@ -38,8 +36,6 @@ def loginPage(request):
 
 def logoutUser(request):
     logout(request)
-    request.user.is_active = False
-    request.user.save()
     return redirect('loginPage')
 
 def registerUser(request):
@@ -61,14 +57,23 @@ def registerUser(request):
     context = {'form':form}
     return render(request, 'baseProject/loginAndRegister.html',context)
 def home(request):
+    page = 'home'
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
     num = 5
     topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by('-num_participants', '-num_rooms')[0:num]
     total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
     rooms_count = rooms.count()
-    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q)) #TODO Modify get all the follower messages
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants}
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+
+    user = request.user
+    if user.is_authenticated:
+        friends = user.friends.all()
+        friend_messages = Message.objects.filter(user__in=friends)
+    else:
+        friend_messages = None
+
+    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants,"friend_messages":friend_messages,"page":page}
     return render(request, 'baseProject/home.html',context)
 def room(request, pk):
     room = Room.objects.get(id=pk)
@@ -87,11 +92,17 @@ def room(request, pk):
 
 
 def userProfile(request, pk):
+    page = 'userProfile'
     user = User.objects.get(id=pk)
     rooms = user.room_set.all()
     room_messages = user.message_set.all()
-    topics = Topic.objects.all()
-    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics}
+
+    num = 5
+    topics = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by(
+        '-num_participants', '-num_rooms')[0:num]
+    total_participants = topics.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
+
+    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page}
     return render(request, 'baseProject/profile.html',context)
 
 
