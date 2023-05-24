@@ -27,6 +27,7 @@ def loginPage(request):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
+            user.is_active = True
             return redirect('home')
         else:
             messages.error(request, 'Email or password is incorrect')
