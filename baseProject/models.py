@@ -13,6 +13,12 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+class FriendshipRequest(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
+    created = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField(default=False)
+
 class Topic(models.Model):
     name = models.CharField(max_length=10, unique=True)
     def __str__(self):

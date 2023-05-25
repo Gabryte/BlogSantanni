@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from .models import Room, Topic, Message, User
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Room, Topic, Message, User, FriendshipRequest
 from .forms import RoomForm, UserForm,UserRegistrationForm
 from django.db.models import Q, Count, Sum
 from django.contrib.auth.decorators import login_required
@@ -126,7 +126,15 @@ def userProfile(request, pk):
         '-num_participants', '-num_rooms')[0:num]
     total_participants = topics.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
 
-    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page}
+    userSearched = user
+    userRequester = request.user
+
+    can_send = not FriendshipRequest.objects.filter(
+        from_user=userRequester,
+        to_user=userSearched,
+    ).exists()
+
+    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send}
     return render(request, 'baseProject/profile.html',context)
 
 
@@ -225,3 +233,15 @@ def argumentsPage(request):
     arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')
     context={'arguments':arguments}
     return render(request,'baseProject/arguments.html',context)
+
+
+def requestFriend(request,pk):
+    recipient_user = get_object_or_404(User,id=pk)
+    sender_user = request.user
+
+    friendship_request = FriendshipRequest.objects.create(
+        from_user=sender_user,
+        to_user=recipient_user,
+    )
+
+    return redirect('user-profile',pk=recipient_user.id)

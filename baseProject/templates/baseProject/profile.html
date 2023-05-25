@@ -1,48 +1,65 @@
 {% extends 'main.html' %}
 {% block content %}
-<main class="profile-page layout layout--3">
-    <div class="container">
-      <!-- Topics Start -->
-      {% include 'baseProject/topic_inside.html' %}
-      <!-- Topics End -->
+    <main class="profile-page layout layout--3">
+        <div class="container">
+            <!-- Topics Start -->
+            {% include 'baseProject/topic_inside.html' %}
+            <!-- Topics End -->
 
-      <!-- Room List Start -->
-      <div class="roomList">
-        <div class="profile">
-          <div class="profile__avatar">
-            <div class="avatar avatar--large active">
-              <img src="{{ user.icon.url }}" />
-            </div>
-          </div>
-          <div class="profile__info">
-            <h3>{{ user.username }}</h3>
-            <p>@{{ user.username }}</p>
-              {% if request.user == user  %}
-            <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Edit Profile</a>
+            <!-- Room List Start -->
+            <div class="roomList">
+                <div class="profile">
+                    <div class="profile__avatar">
+                        <div class="avatar avatar--large active">
+                            <img src="{{ user.icon.url }}"/>
+                        </div>
+                    </div>
+                    <div class="profile__info">
+                        <h3>{{ user.username }}</h3>
+                        <p>@{{ user.username }}</p>
+                        {% if request.user == user %}
+                            <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Edit Profile</a>
+                        {% endif %}
+                    </div>
+                    <div class="profile__about">
+                        <h3>About</h3>
+                        <p>
+                            {{ user.status }}
+                        </p>
+                    </div>
+                </div>
+                {% if can_send  and user != request.user %}
+                    <form method="post" action="{% url 'send_friend_request' user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="recipient_id" value="{{ user.id }}">
+                        <button class="cool-button" type="submit">Send Friend Request</button>
+                    </form>
+                {% else %}
+                    {% if user == request.user %}
+                        <div class="profile__about">
+                            <h3>Can't send a friendship request to your own profile</h3>
+                        </div>
+                    {% else %}
+                        <div class="profile__about">
+                            <h3>Friendship request already sent</h3>
+                        </div>
+                    {% endif %}
                 {% endif %}
-          </div>
-          <div class="profile__about">
-            <h3>About</h3>
-            <p>
-                {{user.status}}
-            </p>
-          </div>
-        </div>
 
-        <div class="roomList__header">
-          <div>
-            <h2>
-                Recent Channels created by {{ user.name }}
-            </h2>
-          </div>
-        </div>
-          {% include 'baseProject/central_home.html' %}
-      </div>
-      <!-- Room List End -->
+                <div class="roomList__header">
+                    <div>
+                        <h2>
+                            Recent Channels created by {{ user.name }}
+                        </h2>
+                    </div>
+                </div>
+                {% include 'baseProject/central_home.html' %}
+            </div>
+            <!-- Room List End -->
 
-      <!-- Activities Start -->
-      {% include 'baseProject/feed_inside.html' %}
-      <!-- Activities End -->
-    </div>
-  </main>
+            <!-- Activities Start -->
+            {% include 'baseProject/feed_inside.html' %}
+            <!-- Activities End -->
+        </div>
+    </main>
 {% endblock content %}
