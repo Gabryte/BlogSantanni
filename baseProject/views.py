@@ -70,14 +70,45 @@ def userSearch(request):
     searched_users_messages = Message.objects.filter(Q(user__username__icontains=q) | Q(user__email__icontains=q) | Q(user__name__icontains=q) | Q(user__surname__icontains=q))
 
     user = request.user
+    requestFriendsExists = False
     if user.is_authenticated:
-        friends = user.friends.all()
-        friend_messages = Message.objects.filter(user__in=friends)
+        requestFriendsExists = FriendshipRequest.objects.filter(
+            from_user=user,
+            accepted=True,
+        ).exists()
+
+        if (requestFriendsExists == False):
+            requestFriendsExists = FriendshipRequest.objects.filter(
+                to_user=user,
+                accepted=True,
+            ).exists()
+
+        if (requestFriendsExists != False):
+            # Get all accepted outgoing friend requests
+            outgoing_requests = FriendshipRequest.objects.filter(
+                from_user=user,
+                accepted=True
+            ).values_list('to_user', flat=True)
+
+            # Get all accepted incoming friend requests
+            incoming_requests = FriendshipRequest.objects.filter(
+                to_user=user,
+                accepted=True
+            ).values_list('from_user', flat=True)
+
+            # Combine outgoing and incoming requests to get all friends
+            friend_ids = set(list(outgoing_requests) + list(incoming_requests))
+
+            # Retrieve the user objects for the friend IDs
+            friends = User.objects.filter(id__in=friend_ids)
+            friend_messages = Message.objects.filter(user__in=friends)
+        else:
+            friend_messages = None
     else:
         friend_messages = None
 
     context = {'searched_users_messages':searched_users_messages,'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
-               "total_participants": total_participants, "friend_messages": friend_messages, "page": page}
+               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,"requestFriendsExists":requestFriendsExists}
     return render(request, 'baseProject/home.html', context)
 
 def home(request):
