@@ -32,7 +32,7 @@
                     </form>
                     <ul class="listTopics">
                         <li>
-                            <a class="active">All Friends <span>{{ friendsNumber }}</span></a>
+                            <a class="active">All Friends <span>{{ friends.count }}</span></a>
                         </li>
                         {% for friend in friends %}
                             <a href="{% url 'user-profile' friend.id %}" class="participant">
@@ -51,7 +51,7 @@
                             </form>
                         {% endfor %}
                         <li>
-                            <a class="active">All Requests <span>{{ requestsNumber }}</span></a>
+                            <a class="active">All Requests <span>{{ requestUsers.count }}</span></a>
                         </li>
                         {% for requestUser in requestsUsers %}
                             <a href="{% url 'user-profile' requestUser.id %}" class="participant">

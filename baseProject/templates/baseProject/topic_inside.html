@@ -32,6 +32,6 @@
         </label>
     </form>
     {% if request.user.is_authenticated %}
-    <a href="{% url 'friends' request.user.id%}" class="cool-button">Visit Friends</a>
+    <a href="{% url 'friends'%}" class="cool-button">Visit Friends</a>
     {% endif %}
 </div>
