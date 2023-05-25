@@ -18,5 +18,8 @@ urlpatterns = [
     path('argumentsAkaTopics/',views.argumentsPage,name="arguments"),
     path('messagesFromUsers/',views.usersMessages,name="messages"),
     path('userSearch/',views.userSearch,name="userSearch"),
-    path('requestOfFriendShip/<str:pk>',views.requestFriend,name="send_friend_request")
+    path('requestOfFriendShip/<str:pk>',views.requestFriend,name="send_friend_request"),
+    path('friends/<str:pk>',views.friends,name="friends"),
+    path('delete-friend/<str:id>',views.deleteFriend,name='delete-friend'),
+    path('accept-friend/<str:id>',views.acceptFriend,name='accept-friend'),
 ]

@@ -197,6 +197,13 @@ def userProfile(request, pk):
         to_user=userSearched,
     ).exists()
 
+    if(can_send == True):#if someone else have already made the request
+        can_send = not FriendshipRequest.objects.filter(
+            to_user=userRequester,
+            from_user=userSearched,
+        ).exists()
+
+
     context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send}
     return render(request, 'baseProject/profile.html',context)
 
@@ -308,3 +315,27 @@ def requestFriend(request,pk):
     )
 
     return redirect('user-profile',pk=recipient_user.id)
+def friends(request,pk):
+    return None
+
+
+def deleteFriend(request,pk):
+    userNav = request.user
+    userRec = get_object_or_404(User,id=pk)
+    FriendshipRequest.objects.filter(
+        from_user__in=[userNav, userRec],
+        to_user__in=[userNav, userRec]
+    ).delete()
+    return redirect('friends',userNav.id)
+
+
+def acceptFriend(request,pk):
+    userNav = request.user
+    userRec = get_object_or_404(User, id=pk)
+
+    FriendshipRequest.objects.filter(
+        from_user__in = userRec,
+        to_user_in = userNav,
+    ).update(accepted=True)
+
+    return redirect('friends',userNav.id)
