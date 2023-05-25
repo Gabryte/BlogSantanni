@@ -32,7 +32,7 @@
                     <form method="post" action="{% url 'send_friend_request' user.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="recipient_id" value="{{ user.id }}">
-                        <button class="cool-button" type="submit">Send Friend Request</button>
+                        <button class="btn btn--main" type="submit">Send Friend Request</button>
                     </form>
                 {% else %}
                     {% if user == request.user %}

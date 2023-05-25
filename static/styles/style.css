@@ -42,6 +42,27 @@ html {
   }
 }
 
+.cool-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cool-button:hover {
+  background-color: #45a049;
+}
+
+.cool-button:active {
+  background-color: #3e8e41;
+}
+
 body {
   line-height: 1.6;
   font-weight: 400;
@@ -122,30 +143,6 @@ a {
   background: transparent;
   border: 2px solid var(--color-mainStructure);
 }
-
-.cool-button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.cool-button:hover {
-  background-color: #45a049;
-}
-
-.cool-button:active {
-  background-color: #3e8e41;
-}
-
-
-
 
 
 .action-button {

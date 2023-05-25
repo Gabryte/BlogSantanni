@@ -1,4 +1,4 @@
-{% if request.user.friends.exists and request.user.showFriendsMessages == True%}
+{% if requestFriendsExists and request.user.showFriendsMessages == True%}
     <div class="LastMessagesFromUsers">
           <div class="layout__boxHeader">
             <h2>Friend Messages</h2>
