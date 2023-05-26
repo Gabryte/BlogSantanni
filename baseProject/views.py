@@ -208,8 +208,6 @@ def userProfile(request, pk):
         (Q(from_user=userRequester) | Q(to_user=userSearched) | Q(from_user=userSearched) | Q(to_user=userRequester)) and Q(accepted=True)
     ).exists()
 
-
-
     context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
     return render(request, 'baseProject/profile.html',context)
 
@@ -321,6 +319,8 @@ def requestFriend(request,pk):
     )
 
     return redirect('user-profile',pk=recipient_user.id)
+
+@login_required(login_url='loginPage')
 def friends(request):
 
     #Getting friends of request.user
@@ -340,10 +340,28 @@ def friends(request):
     )
 
 
-    list = FriendshipRequest.objects.filter(
-       Q(to_user=request.user) and Q(accepted=False)
-    ).values_list('from_user',flat=True)
-    listOfRequests = User.objects.filter(id__in=list)
+    #listFrom = FriendshipRequest.objects.filter(
+    #   Q(to_user_id=request.user.id) and Q(accepted=False)
+    #).values_list('from_user',flat=True)
+
+    listFrom = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=False
+    ).values_list('from_user', flat=True)
+
+    listFrom = [x for x in listFrom if x != request.user.id]
+
+   # listUsers = FriendshipRequest.objects.filter(
+   #     to_user_id__in=listTo,
+   #     accepted=False
+   # ).values_list('from_user',flat=True)
+
+
+    listOfRequests = User.objects.filter(
+        id__in=listFrom
+    )
+
+
 
 
     context={'friends':friendsOfUser,'requestUsers':listOfRequests}
