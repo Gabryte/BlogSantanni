@@ -69,9 +69,33 @@ def userSearch(request):
     room_messages = None
     searched_users_messages = Message.objects.filter(Q(user__username__icontains=q) | Q(user__email__icontains=q) | Q(user__name__icontains=q) | Q(user__surname__icontains=q))
 
+    friend_messages, requestFriendsExists = checkForFriendsMessages(request)
+
+    context = {'searched_users_messages':searched_users_messages,'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
+               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,"requestFriendsExists":requestFriendsExists}
+    return render(request, 'baseProject/home.html', context)
+
+def home(request):
+    page = 'home'
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
+    num = 5
+    topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by('-num_participants', '-num_rooms')[0:num]
+    total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
+    rooms_count = rooms.count()
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
+
+    friend_messages, requestFriendsExists = checkForFriendsMessages(request)
+
+    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants,"friend_messages":friend_messages,"page":page,"requestFriendsExists":requestFriendsExists}
+    return render(request, 'baseProject/home.html',context)
+
+
+def checkForFriendsMessages(request):
     user = request.user
     requestFriendsExists = False
     if user.is_authenticated:
+
         requestFriendsExists = FriendshipRequest.objects.filter(
             from_user=user,
             accepted=True,
@@ -106,62 +130,9 @@ def userSearch(request):
             friend_messages = None
     else:
         friend_messages = None
+    return friend_messages, requestFriendsExists
 
-    context = {'searched_users_messages':searched_users_messages,'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
-               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,"requestFriendsExists":requestFriendsExists}
-    return render(request, 'baseProject/home.html', context)
 
-def home(request):
-    page = 'home'
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
-    num = 5
-    topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by('-num_participants', '-num_rooms')[0:num]
-    total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
-    rooms_count = rooms.count()
-    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
-
-    user = request.user
-    requestFriendsExists = False
-    if user.is_authenticated:
-
-        requestFriendsExists = FriendshipRequest.objects.filter(
-            from_user=user,
-            accepted=True,
-        ).exists()
-
-        if(requestFriendsExists == False):
-            requestFriendsExists = FriendshipRequest.objects.filter(
-                to_user=user,
-                accepted=True,
-            ).exists()
-
-        if(requestFriendsExists != False):
-            # Get all accepted outgoing friend requests
-            outgoing_requests = FriendshipRequest.objects.filter(
-                from_user=user,
-                accepted=True
-            ).values_list('to_user', flat=True)
-
-            # Get all accepted incoming friend requests
-            incoming_requests = FriendshipRequest.objects.filter(
-                to_user=user,
-                accepted=True
-            ).values_list('from_user', flat=True)
-
-            # Combine outgoing and incoming requests to get all friends
-            friend_ids = set(list(outgoing_requests) + list(incoming_requests))
-
-            # Retrieve the user objects for the friend IDs
-            friends = User.objects.filter(id__in=friend_ids)
-            friend_messages = Message.objects.filter(user__in=friends)
-        else:
-            friend_messages = None
-    else:
-        friend_messages = None
-
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants,"friend_messages":friend_messages,"page":page,"requestFriendsExists":requestFriendsExists}
-    return render(request, 'baseProject/home.html',context)
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = room.message_set.all()
@@ -204,14 +175,18 @@ def userProfile(request, pk):
             from_user=userSearched,
         ).exists()
 
+    alreadyFriends = checkIfFriends(request, userSearched)
+
+    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
+    return render(request, 'baseProject/profile.html',context)
+
+
+def checkIfFriends(request, userSearched):
     alreadyFriends = False
     friends = getUserFriends(request)
     if friends.contains(userSearched):
         alreadyFriends = True
-
-
-    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
-    return render(request, 'baseProject/profile.html',context)
+    return alreadyFriends
 
 
 @login_required(login_url='loginPage')
