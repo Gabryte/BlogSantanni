@@ -204,9 +204,11 @@ def userProfile(request, pk):
             from_user=userSearched,
         ).exists()
 
-    alreadyFriends = FriendshipRequest.objects.filter(
-        (Q(from_user=userRequester) | Q(to_user=userSearched) | Q(from_user=userSearched) | Q(to_user=userRequester)) and Q(accepted=True)
-    ).exists()
+    alreadyFriends = False
+    friends = getUserFriends(request)
+    if friends.contains(userSearched):
+        alreadyFriends = True
+
 
     context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
     return render(request, 'baseProject/profile.html',context)
@@ -322,67 +324,53 @@ def requestFriend(request,pk):
 
 @login_required(login_url='loginPage')
 def friends(request):
+    friendsOfUser = getUserFriends(request)
 
-    #Getting friends of request.user
-    listOfR = FriendshipRequest.objects.filter(
-        to_user_id=request.user.id,
-        accepted=True
-    ).values_list('from_user',flat=True)
-
-    listOfR2 = FriendshipRequest.objects.filter(
-        from_user_id=request.user.id,
-        accepted=True
-    ).values_list('from_user',flat=True)
-
-    listOfReqFrom = listOfR | listOfR2
-
-    listOfReqTo1 = FriendshipRequest.objects.filter(
-        to_user_id=request.user.id,
-        accepted=True
-    ).values_list('to_user',flat=True)
-
-    listOfReqTo2 = FriendshipRequest.objects.filter(
-        from_user_id=request.user.id,
-        accepted=True
-    ).values_list('to_user', flat=True)
-
-    listOfReqTo = listOfReqTo1 | listOfReqTo2
-
-    listOfReqFromCleaned = [x for x in listOfReqFrom if x != request.user.id]
-    listOfReqToCleaned = [x for x in listOfReqTo if x != request.user.id]
-
-    friendsOfUser = User.objects.filter(
-        id__in=listOfReqFromCleaned + listOfReqToCleaned
-    )
-
-
-    #listFrom = FriendshipRequest.objects.filter(
-    #   Q(to_user_id=request.user.id) and Q(accepted=False)
-    #).values_list('from_user',flat=True)
-
-    listFrom = FriendshipRequest.objects.filter(
-        to_user_id=request.user.id,
-        accepted=False
-    ).values_list('from_user', flat=True)
-
-    listFrom = [x for x in listFrom if x != request.user.id]
-
-   # listUsers = FriendshipRequest.objects.filter(
-   #     to_user_id__in=listTo,
-   #     accepted=False
-   # ).values_list('from_user',flat=True)
-
-
-    listOfRequests = User.objects.filter(
-        id__in=listFrom
-    )
-
-
-
+    listOfRequests = getUserFriendshipRequests(request)
 
     context={'friends':friendsOfUser,'requestUsers':listOfRequests}
 
     return render(request,'baseProject/friends.html',context)
+
+
+def getUserFriendshipRequests(request):
+    listFrom = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=False
+    ).values_list('from_user', flat=True)
+    listFrom = [x for x in listFrom if x != request.user.id]
+    listOfRequests = User.objects.filter(
+        id__in=listFrom
+    )
+    return listOfRequests
+
+
+def getUserFriends(request):
+    # Getting friends of request.user
+    listOfR = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=True
+    ).values_list('from_user', flat=True)
+    listOfR2 = FriendshipRequest.objects.filter(
+        from_user_id=request.user.id,
+        accepted=True
+    ).values_list('from_user', flat=True)
+    listOfReqFrom = listOfR | listOfR2
+    listOfReqTo1 = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=True
+    ).values_list('to_user', flat=True)
+    listOfReqTo2 = FriendshipRequest.objects.filter(
+        from_user_id=request.user.id,
+        accepted=True
+    ).values_list('to_user', flat=True)
+    listOfReqTo = listOfReqTo1 | listOfReqTo2
+    listOfReqFromCleaned = [x for x in listOfReqFrom if x != request.user.id]
+    listOfReqToCleaned = [x for x in listOfReqTo if x != request.user.id]
+    friendsOfUser = User.objects.filter(
+        id__in=listOfReqFromCleaned + listOfReqToCleaned
+    )
+    return friendsOfUser
 
 
 def deleteFriend(request,pk):
