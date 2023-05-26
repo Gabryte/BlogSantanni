@@ -48,6 +48,7 @@ html {
   border: none;
   color: white;
   padding: 10px 20px;
+  margin-top: 5px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -107,6 +108,7 @@ a {
 .btn--link {
   border-radius: 0;
   padding: 0;
+  margin-bottom:  5px;
   color: var(--color-mainStructure);
   box-shadow: none;
 }
@@ -765,7 +767,7 @@ a {
 
 .ChannelListTopicRoom {
   padding: 5px 1.5rem;
-  background-color: var(--obscure-color-medium);
+  background-color: var(--bg);
   border-radius: 5rem;
   font-weight: 500;
   font-size: 1.3rem;
@@ -793,7 +795,19 @@ a {
   padding: 1.5rem;
   border: 2px solid var(--obscure-color-medium);
   border-radius: 5px;
+  overflow-y: auto;
 }
+
+.ActivitiesBoxingBox::-webkit-scrollbar {
+  width: 0.6rem;
+  background-color: rgb(41, 41, 46);
+}
+
+.ActivitiesBoxingBox::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray);
+  border-radius: 1rem;
+}
+
 
 .activities__boxHeader p {
   font-size: 1.4rem;
