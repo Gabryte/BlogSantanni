@@ -36,13 +36,16 @@
                     </form>
                 {% else %}
                     {% if user == request.user %}
-                        <div class="profile__about">
-                            <h3>Can't send a friendship request to your own profile</h3>
-                        </div>
                     {% else %}
+                        {% if alreadyFriends == True %}
                         <div class="profile__about">
-                            <h3>Friendship request already sent to {{ user.username }} or received by you</h3>
+                            <h3>You are a friend of {{ user.username }}</h3>
                         </div>
+                        {% else %}
+                            <div class="profile__about">
+                                <h3>Request pending between you and {{ user.username }}</h3>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 

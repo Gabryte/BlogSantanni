@@ -178,6 +178,7 @@ def room(request, pk):
     return render(request, 'baseProject/room.html',context)
 
 
+@login_required(login_url='login')
 def userProfile(request, pk):
     page = 'userProfile'
     user = User.objects.get(id=pk)
@@ -203,8 +204,13 @@ def userProfile(request, pk):
             from_user=userSearched,
         ).exists()
 
+    alreadyFriends = FriendshipRequest.objects.filter(
+        (Q(from_user=userRequester) | Q(to_user=userSearched) | Q(from_user=userSearched) | Q(to_user=userRequester)) and Q(accepted=True)
+    ).exists()
 
-    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send}
+
+
+    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
     return render(request, 'baseProject/profile.html',context)
 
 
@@ -316,30 +322,6 @@ def requestFriend(request,pk):
 
     return redirect('user-profile',pk=recipient_user.id)
 def friends(request):
-    #fR_f = FriendshipRequest.objects.filter(
-     #   (Q(from_user=request.user) | Q(to_user=request.user)) and Q(accepted=True)
-    #)
-    #friendsOfUser  = User.objects.filter(
-    #    (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(received_requests__accepted=True)
-    #).exclude(id=request.user.id)
-
-    #listOfRequests = FriendshipRequest.objects.filter(
-    #    Q(to_user=request.user) and Q(accepted=False)
-    #)
-
-    #listOfRequests = User.objects.filter(
-    #    Q(received_requests__to_user=request.user) and Q(received_requests__accepted=False)
-    #)
-    #user = request.user
-
-    # Get the senders of friendship requests received by the user
-    #sendersUsers = User.objects.all().exclude(id=user.id)
-
-    #listOfRequests = User.objects.filter(
-    #    received_requests__to_user=user,
-    #    received_requests__accepted=False,
-    #).get(received_requests__from_user__in=sendersUsers)
-
 
     #Getting friends of request.user
     listOfReqFrom = FriendshipRequest.objects.filter(
