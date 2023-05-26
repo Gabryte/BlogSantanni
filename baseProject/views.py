@@ -319,9 +319,9 @@ def friends(request):
     #fR_f = FriendshipRequest.objects.filter(
      #   (Q(from_user=request.user) | Q(to_user=request.user)) and Q(accepted=True)
     #)
-    friendsOfUser  = User.objects.filter(
-        (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(received_requests__accepted=True)
-    ).exclude(id=request.user.id)
+    #friendsOfUser  = User.objects.filter(
+    #    (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(received_requests__accepted=True)
+    #).exclude(id=request.user.id)
 
     #listOfRequests = FriendshipRequest.objects.filter(
     #    Q(to_user=request.user) and Q(accepted=False)
@@ -339,6 +339,24 @@ def friends(request):
     #    received_requests__to_user=user,
     #    received_requests__accepted=False,
     #).get(received_requests__from_user__in=sendersUsers)
+
+
+    #Getting friends of request.user
+    listOfReqFrom = FriendshipRequest.objects.filter(
+        (Q(to_user_id=request.user.id) | Q(from_user_id=request.user.id)) and Q(accepted=True),
+    ).values_list('from_user',flat=True)
+
+    listOfReqTo = FriendshipRequest.objects.filter(
+        (Q(to_user_id=request.user.id) | Q(from_user_id=request.user.id)) and Q(accepted=True),
+    ).values_list('to_user',flat=True)
+
+    listOfReqFromCleaned = [x for x in listOfReqFrom if x != request.user.id]
+    listOfReqToCleaned = [x for x in listOfReqTo if x != request.user.id]
+
+    friendsOfUser = User.objects.filter(
+        id__in=listOfReqFromCleaned + listOfReqToCleaned
+    )
+
 
     list = FriendshipRequest.objects.filter(
        Q(to_user=request.user) and Q(accepted=False)
