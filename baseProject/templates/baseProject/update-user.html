@@ -5,12 +5,13 @@
             <div class="layout__box">
                 <div class="layout__boxHeader">
                     <div class="layout__boxTitle">
-                        <a href="{{ request.META.HTTP_REFERER }}"><!-- TODO Change in order to return to the last visited page before this one -->
+                        <a href="{{ request.META.HTTP_REFERER }}">
+                            <!-- TODO Change in order to return to the last visited page before this one -->
                             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                viewBox="0 0 32 32">
+                                 viewBox="0 0 32 32">
                                 <title>arrow-left</title>
                                 <path
-                                    d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                                        d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
                                 </path>
                             </svg>
                         </a>
@@ -18,21 +19,23 @@
                     </div>
                 </div>
                 <div class="layout__body">
-                    <form class="form" action="" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {% for field in form %}
-                        <div class="form__group">
-                            <label for="profile_pic">{{ field.label }}</label>
-                            {{field}}
-                        </div>
-                        {% endfor %}
-                    <div class="form__action">
-                        <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a><!-- TODO Change in order to return to the last visited page before this one -->
-                        <button class="btn btn--main" type="submit">Save</button>
+                    <div class="listTopics">
+                        <form class="form" action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="form__group">
+                                    <label for="profile_pic">{{ field.label }}</label>
+                                    {{ field }}
+                                </div>
+                            {% endfor %}
+                            <div class="form__action">
+                                <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+                                <button class="btn btn--main" type="submit">Save</button>
+                            </div>
+                        </form>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
     </main>
-{% endblock content%}
+{% endblock content %}

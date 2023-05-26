@@ -149,7 +149,7 @@ def room(request, pk):
     return render(request, 'baseProject/room.html',context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='loginPage')
 def userProfile(request, pk):
     page = 'userProfile'
     user = User.objects.get(id=pk)

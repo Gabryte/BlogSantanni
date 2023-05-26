@@ -603,21 +603,33 @@ a {
   justify-content: space-between;
   margin-bottom: 3rem;
   font-weight: 500;
-  color: var(--color-light-gray);
+  color: whitesmoke;
   transition: all 0.3s ease-in-out;
 }
 
 
-.listTopics li a.active,
+
 .listTopics li a:hover {
   color: var(--color-mainStructure);
 }
 
-.listTopics li a small{
-  color: gold;
+.listTopics li a i{
+  color: var(--color-mainStructure);
   font-weight: 100;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
+
+
+.listTopics li a .numberPro {
+  padding: 0.5rem 1rem;
+  background-color: var(--obscure-color);
+  color: var(--color-mainStructure);
+  border-radius: 50px;
+  font-weight: 100;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
 
 .listTopics li a span {
   padding: 0.5rem 1rem;
@@ -627,6 +639,9 @@ a {
   font-weight: 700;
   letter-spacing: 1px;
 }
+
+
+
 
 .topics-page a:hover {
   text-decoration: underline;
