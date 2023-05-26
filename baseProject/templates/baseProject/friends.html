@@ -36,20 +36,26 @@
                         </li>
                         {% for friend in friends %}
                             {% if friend != request.user %}
-                            <a href="{% url 'user-profile' friend.id %}" class="participant">
-                                <div class="avatar avatar--medium">
-                                    <img src="{{ friend.icon.url }}"/>
-                                </div>
-                                <p>
-                                    {{ friend.username }}
-                                    <span>@{{ friend.username }}</span>
-                                </p>
-                            </a>
-                            <form method="post" action="{% url 'delete-friend' friend.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="recipient_id" value="{{ friend.id }}">
-                                <button class="btn btn-pill" type="submit">Delete Friend</button>
-                            </form>
+                                <a href="{% url 'user-profile' friend.id %}" class="participant">
+                                    {% if friend.is_authenticated %}
+                                        <div class="avatar avatar--medium active">
+                                            <img src="{{ friend.icon.url }}"/>
+                                        </div>
+                                    {% else %}
+                                        <div class="avatar avatar--medium">
+                                            <img src="{{ friend.icon.url }}"/>
+                                        </div>
+                                    {% endif %}
+                                    <p>
+                                        {{ friend.username }}
+                                        <span>@{{ friend.username }}</span>
+                                    </p>
+                                </a>
+                                <form method="post" action="{% url 'delete-friend' friend.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="recipient_id" value="{{ friend.id }}">
+                                    <button class="btn btn-pill" type="submit">Delete Friend</button>
+                                </form>
                             {% endif %}
                         {% endfor %}
                         <li>
@@ -57,25 +63,31 @@
                         </li>
                         {% for requestUser in requestUsers %}
                             {% if requestUser != request.user %}
-                            <a href="{% url 'user-profile' requestUser.id %}" class="participant">
-                                <div class="avatar avatar--medium">
-                                    <img src="{{ requestUser.icon.url }}"/>
-                                </div>
-                                <p>
-                                    {{ requestUser.username }}
-                                    <span>@{{ requestUser.username }}</span>
-                                </p>
-                            </a>
-                            <form method="post" action="{% url 'accept-friend' requestUser.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
-                                <button class="btn btn-pill" type="submit">Accept Friend</button>
-                            </form>
-                            <form method="post" action="{% url 'delete-friend' requestUser.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
-                                <button class="btn btn--pill" type="submit">Delete Friend</button>
-                            </form>
+                                <a href="{% url 'user-profile' requestUser.id %}" class="participant">
+                                    {% if requestUser.is_authenticated %}
+                                        <div class="avatar avatar--medium active">
+                                            <img src="{{ requestUser.icon.url }}"/>
+                                        </div>
+                                    {% else %}
+                                        <div class="avatar avatar--medium">
+                                            <img src="{{ requestUser.icon.url }}"/>
+                                        </div>
+                                    {% endif %}
+                                    <p>
+                                        {{ requestUser.username }}
+                                        <span>@{{ requestUser.username }}</span>
+                                    </p>
+                                </a>
+                                <form method="post" action="{% url 'accept-friend' requestUser.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
+                                    <button class="btn btn-pill" type="submit">Accept Friend</button>
+                                </form>
+                                <form method="post" action="{% url 'delete-friend' requestUser.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
+                                    <button class="btn btn--pill" type="submit">Delete Friend</button>
+                                </form>
                             {% endif %}
                         {% endfor %}
                     </ul>

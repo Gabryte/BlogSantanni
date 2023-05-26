@@ -7,7 +7,7 @@
             <div class="ActivitiesBoxingBox">
                 <div class="activities__boxHeader ChannelListerRoomHeaderBlock">
                     <a href="{% url 'user-profile' activity.user.id %}" class="HostRoomChannelLister">
-                        {% if user.is_authenticated %}
+                        {% if activity.user.is_authenticated %}
                             <div class="avatar avatar--small active">
                                 <img src="{{ activity.user.icon.url }}"/>
                             </div>
@@ -46,7 +46,7 @@
                 <div class="ActivitiesBoxingBox">
                     <div class="activities__boxHeader ChannelListerRoomHeaderBlock">
                         <a href="{% url 'user-profile' activity.user.id %}" class="HostRoomChannelLister">
-                            {% if user.is_authenticated %}
+                            {% if activity.user.is_authenticated %}
                                 <div class="avatar avatar--small active">
                                     <img src="{{ activity.user.icon.url }}"/>
                                 </div>
@@ -88,7 +88,7 @@
                 <div class="ActivitiesBoxingBox">
                     <div class="activities__boxHeader ChannelListerRoomHeaderBlock">
                         <a href="{% url 'user-profile' activity.user.id %}" class="HostRoomChannelLister">
-                            {% if user.is_authenticated %}
+                            {% if activity.user.is_authenticated %}
                                 <div class="avatar avatar--small active">
                                     <img src="{{ activity.user.icon.url }}"/>
                                 </div>

@@ -2,7 +2,7 @@
     <div class="RoomIteratedLister">
         <div class="ChannelListerRoomHeaderBlock">
             <a href="{% url 'user-profile' room.host.id %}" class="HostRoomChannelLister">
-                {% if user.is_authenticated %}
+                {% if room.host.is_authenticated %}
                     <div class="avatar avatar--small active">
                         <img src="{{ room.host.icon.url }}"/>
                     </div>
