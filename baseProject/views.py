@@ -344,6 +344,8 @@ def friends(request):
        Q(to_user=request.user) and Q(accepted=False)
     ).values_list('from_user',flat=True)
     listOfRequests = User.objects.filter(id__in=list)
+
+
     context={'friends':friendsOfUser,'requestUsers':listOfRequests}
 
     return render(request,'baseProject/friends.html',context)
@@ -356,14 +358,12 @@ def deleteFriend(request,pk):
         from_user__in=[userNav, userRec],
         to_user__in=[userNav, userRec]
     ).delete()
-    return redirect('friends',userNav.id)
+    return redirect('friends')
 
 
 def acceptFriend(request,pk):
-    userNav = request.user
-    userRec = get_object_or_404(User, id=pk)
     FriendshipRequest.objects.filter(
-        from_user__in = userRec,
-        to_user_in = userNav,
+        from_user_id=pk,
+        to_user_id = request.user.id
     ).update(accepted=True)
-    return redirect('friends',userNav.id)
+    return redirect('friends')

@@ -35,6 +35,7 @@
                             <a class="active">All Friends <span>{{ friends.count }}</span></a>
                         </li>
                         {% for friend in friends %}
+                            {% if friend != request.user %}
                             <a href="{% url 'user-profile' friend.id %}" class="participant">
                                 <div class="avatar avatar--medium">
                                     <img src="{{ friend.icon.url }}"/>
@@ -47,13 +48,15 @@
                             <form method="post" action="{% url 'delete-friend' friend.id %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="recipient_id" value="{{ friend.id }}">
-                                <button class="btn btn-danger" type="submit">Delete Friend</button>
+                                <button class="btn btn-pill" type="submit">Delete Friend</button>
                             </form>
+                            {% endif %}
                         {% endfor %}
                         <li>
                             <a class="active">All Requests <span>{{ requestUsers.count }}</span></a>
                         </li>
                         {% for requestUser in requestUsers %}
+                            {% if requestUser != request.user %}
                             <a href="{% url 'user-profile' requestUser.id %}" class="participant">
                                 <div class="avatar avatar--medium">
                                     <img src="{{ requestUser.icon.url }}"/>
@@ -73,6 +76,7 @@
                                 <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
                                 <button class="btn btn--pill" type="submit">Delete Friend</button>
                             </form>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 </div>
