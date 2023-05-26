@@ -324,13 +324,29 @@ def requestFriend(request,pk):
 def friends(request):
 
     #Getting friends of request.user
-    listOfReqFrom = FriendshipRequest.objects.filter(
-        (Q(to_user_id=request.user.id) | Q(from_user_id=request.user.id)) and Q(accepted=True),
+    listOfR = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=True
     ).values_list('from_user',flat=True)
 
-    listOfReqTo = FriendshipRequest.objects.filter(
-        (Q(to_user_id=request.user.id) | Q(from_user_id=request.user.id)) and Q(accepted=True),
+    listOfR2 = FriendshipRequest.objects.filter(
+        from_user_id=request.user.id,
+        accepted=True
+    ).values_list('from_user',flat=True)
+
+    listOfReqFrom = listOfR | listOfR2
+
+    listOfReqTo1 = FriendshipRequest.objects.filter(
+        to_user_id=request.user.id,
+        accepted=True
     ).values_list('to_user',flat=True)
+
+    listOfReqTo2 = FriendshipRequest.objects.filter(
+        from_user_id=request.user.id,
+        accepted=True
+    ).values_list('to_user', flat=True)
+
+    listOfReqTo = listOfReqTo1 | listOfReqTo2
 
     listOfReqFromCleaned = [x for x in listOfReqFrom if x != request.user.id]
     listOfReqToCleaned = [x for x in listOfReqTo if x != request.user.id]
