@@ -320,19 +320,32 @@ def friends(request):
      #   (Q(from_user=request.user) | Q(to_user=request.user)) and Q(accepted=True)
     #)
     friendsOfUser  = User.objects.filter(
-        (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(accepted=True)
+        (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(received_requests__accepted=True)
     ).exclude(id=request.user.id)
 
     #listOfRequests = FriendshipRequest.objects.filter(
     #    Q(to_user=request.user) and Q(accepted=False)
     #)
 
-    listOfRequests = User.objects.filter(
-        (Q(sent_requests__from_user=request.user) | Q(received_requests__to_user=request.user)) and Q(accepted=False)
-    ).exclude(id=request.user.id)
+    #listOfRequests = User.objects.filter(
+    #    Q(received_requests__to_user=request.user) and Q(received_requests__accepted=False)
+    #)
+    #user = request.user
 
+    # Get the senders of friendship requests received by the user
+    #sendersUsers = User.objects.all().exclude(id=user.id)
 
+    #listOfRequests = User.objects.filter(
+    #    received_requests__to_user=user,
+    #    received_requests__accepted=False,
+    #).get(received_requests__from_user__in=sendersUsers)
+
+    list = FriendshipRequest.objects.filter(
+       Q(to_user=request.user) and Q(accepted=False)
+    ).values_list('from_user',flat=True)
+    listOfRequests = User.objects.filter(id__in=list)
     context={'friends':friendsOfUser,'requestUsers':listOfRequests}
+
     return render(request,'baseProject/friends.html',context)
 
 

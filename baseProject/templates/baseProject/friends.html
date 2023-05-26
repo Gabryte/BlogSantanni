@@ -53,7 +53,7 @@
                         <li>
                             <a class="active">All Requests <span>{{ requestUsers.count }}</span></a>
                         </li>
-                        {% for requestUser in requestsUsers %}
+                        {% for requestUser in requestUsers %}
                             <a href="{% url 'user-profile' requestUser.id %}" class="participant">
                                 <div class="avatar avatar--medium">
                                     <img src="{{ requestUser.icon.url }}"/>
@@ -66,12 +66,12 @@
                             <form method="post" action="{% url 'accept-friend' requestUser.id %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
-                                <button class="btn btn-danger" type="submit">Accept Friend</button>
+                                <button class="btn btn-pill" type="submit">Accept Friend</button>
                             </form>
                             <form method="post" action="{% url 'delete-friend' requestUser.id %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
-                                <button class="btn btn-danger" type="submit">Delete Friend</button>
+                                <button class="btn btn--pill" type="submit">Delete Friend</button>
                             </form>
                         {% endfor %}
                     </ul>
