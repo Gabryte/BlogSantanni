@@ -332,7 +332,7 @@ a {
   background: transparent;
   border: none;
   outline: none;
-  color: var(--color-light);
+  color: gray;
 }
 
 @media screen and (max-width: 800px) {
