@@ -26,6 +26,7 @@
   font-size: inherit;
 }
 
+
 html {
   font-size: 56.25%;
 }
@@ -581,10 +582,21 @@ a {
 .listTopics {
   list-style: none;
   overflow-y: auto;
-  height: 330px;
+  height: 600px;
   max-height: 330px;
   width: 100%;
 }
+
+.listTopics::-webkit-scrollbar {
+  width: 0.6rem;
+  background-color: rgb(41, 41, 46);
+}
+
+.listTopics::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray);
+  border-radius: 1rem;
+}
+
 
 .listTopics li a {
   display: flex;
@@ -595,9 +607,16 @@ a {
   transition: all 0.3s ease-in-out;
 }
 
+
 .listTopics li a.active,
 .listTopics li a:hover {
   color: var(--color-mainStructure);
+}
+
+.listTopics li a small{
+  color: gold;
+  font-weight: 100;
+  font-size: 0.9rem;
 }
 
 .listTopics li a span {

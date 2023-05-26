@@ -9,7 +9,13 @@
         </li>
         {% for topic in topics %}
             <li>
-                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}<span>{{ topic.num_participants }}</span><span>{{ topic.room_set.all.count }}</span></a>
+                <a href="{% url 'home' %}?q={{ topic.name }}">{{ topic.name }}</a>
+            </li>
+            <li>
+                <a><small>Participants</small><span>{{ topic.num_participants }}</span></a>
+            </li>
+            <li>
+                <a><small>Rooms</small><span>{{ topic.room_set.all.count }}</span></a>
             </li>
         {% endfor %}
     </ul>

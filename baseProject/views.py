@@ -299,9 +299,15 @@ def requestFriend(request,pk):
 
 @login_required(login_url='loginPage')
 def friends(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+
     friendsOfUser = getUserFriends(request)
 
+    friendsOfUser = friendsOfUser.filter( Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q)).order_by('username')
+
     listOfRequests = getUserFriendshipRequests(request)
+
+    listOfRequests = listOfRequests.filter( Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q)).order_by('username')
 
     context={'friends':friendsOfUser,'requestUsers':listOfRequests}
 
