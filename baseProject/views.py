@@ -138,13 +138,20 @@ def room(request, pk):
     room_messages = room.message_set.all()
     participants = room.participants.all()
     if request.method == 'POST':
-        message = Message.objects.create(
-            user=request.user,
-            room=room,
-            body=request.POST.get('body')
-        )
-        room.participants.add(request.user)
-        return redirect('room', pk=room.id)
+        if(request.user.is_authenticated):
+            if(request.POST.get('body')==''):
+                message = Message.objects.create(
+                    user=request.user,
+                    room=room,
+                    body=request.POST.get('body')
+                )
+                room.participants.add(request.user)
+                return redirect('room', pk=room.id)
+            #TODO ACT
+
+
+        else:
+            return redirect('loginPage')
     context = {'room':room, 'room_messages':room_messages, 'participants':participants}
     return render(request, 'baseProject/room.html',context)
 
@@ -258,7 +265,7 @@ def deleteComment(request, pk):
 
     if request.method == "POST":
         message.delete()
-        return redirect('home')#TODO CHANGE
+        return redirect(request.META.get())#TODO CHANGE
     context = {'obj':message}
     return render(request, 'baseProject/delete.html',context)
 

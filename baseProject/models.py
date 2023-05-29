@@ -43,6 +43,7 @@ class Message(models.Model):
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='comment')
     class Meta:
         ordering = ('-updated','-created')
 
