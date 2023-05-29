@@ -154,15 +154,19 @@ def room(request, pk):
         else:
             return redirect('loginPage')
     elif request.method == 'GET':
-        if q != '':
-            msgToLike = Message.objects.get(id=q)
-            if msgToLike:
-                if msgToLike.likes.filter(id=request.user.id).exists():
-                    msgToLike.likes.remove(request.user)
-                    defaultLikeValue = False
-                else:
-                    msgToLike.likes.add(request.user)
-                    defaultLikeValue = True
+        if request.user.is_authenticated:
+            if q != '':
+                msgToLike = Message.objects.get(id=q)
+                if msgToLike:
+                    if msgToLike.likes.filter(id=request.user.id).exists():
+                        msgToLike.likes.remove(request.user)
+                        defaultLikeValue = False
+                    else:
+                        msgToLike.likes.add(request.user)
+                        defaultLikeValue = True
+                return redirect('room', pk=room.id)
+        else:
+            return redirect('loginPage')
 
     context = {'room':room, 'room_messages':room_messages, 'participants':participants,'def_lik':defaultLikeValue}
     return render(request, 'baseProject/room.html',context)
