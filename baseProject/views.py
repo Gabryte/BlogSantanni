@@ -133,12 +133,13 @@ def checkForFriendsMessages(request):
     return friend_messages, requestFriendsExists
 
 
-def room(request, pk):
+def room(request, pk, msgPk):
     room = Room.objects.get(id=pk)
+    defaultLikeValue = 0
     room_messages = room.message_set.all()
     participants = room.participants.all()
     if request.method == 'POST':
-        if(request.user.is_authenticated):
+        if request.user.is_authenticated:
             if not request.POST.get('body'):
                 return redirect('room',pk=room.id)
             else:
@@ -149,10 +150,20 @@ def room(request, pk):
                 )
                 room.participants.add(request.user)
                 return redirect('room', pk=room.id)
+            msgToLike = Message.objects.get(id=msgPk)
+            if msgToLike:
+                if msgToLike.likes.filter(id=request.user.id):
+                    msgToLike.likes.remove(request.user)
+                    defaultLikeValue=1
+                else:
+                    msgToLike.likes.add(request.user)
+                    defaultLikeValue=2
 
         else:
             return redirect('loginPage')
-    context = {'room':room, 'room_messages':room_messages, 'participants':participants}
+
+    num_likes = None #TODO num likes
+    context = {'room':room, 'room_messages':room_messages, 'participants':participants,'def_lik':defaultLikeValue}
     return render(request, 'baseProject/room.html',context)
 
 
