@@ -133,36 +133,37 @@ def checkForFriendsMessages(request):
     return friend_messages, requestFriendsExists
 
 
-def room(request, pk, msgPk):
+def room(request, pk):
     room = Room.objects.get(id=pk)
-    defaultLikeValue = 0
+    defaultLikeValue = False
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
     room_messages = room.message_set.all()
     participants = room.participants.all()
     if request.method == 'POST':
         if request.user.is_authenticated:
-            if not request.POST.get('body'):
-                return redirect('room',pk=room.id)
-            else:
-                message = Message.objects.create(
-                    user=request.user,
-                    room=room,
-                    body=request.POST.get('body')
-                )
-                room.participants.add(request.user)
-                return redirect('room', pk=room.id)
-            msgToLike = Message.objects.get(id=msgPk)
-            if msgToLike:
-                if msgToLike.likes.filter(id=request.user.id):
-                    msgToLike.likes.remove(request.user)
-                    defaultLikeValue=1
+                if not request.POST.get('body'):
+                    return redirect('room',pk=room.id)
                 else:
-                    msgToLike.likes.add(request.user)
-                    defaultLikeValue=2
-
+                    message = Message.objects.create(
+                        user=request.user,
+                        room=room,
+                        body=request.POST.get('body')
+                    )
+                    room.participants.add(request.user)
+                    return redirect('room', pk=room.id)
         else:
             return redirect('loginPage')
+    elif request.method == 'GET':
+        if q != '':
+            msgToLike = Message.objects.get(id=q)
+            if msgToLike:
+                if msgToLike.likes.filter(id=request.user.id).exists():
+                    msgToLike.likes.remove(request.user)
+                    defaultLikeValue = False
+                else:
+                    msgToLike.likes.add(request.user)
+                    defaultLikeValue = True
 
-    num_likes = None #TODO num likes
     context = {'room':room, 'room_messages':room_messages, 'participants':participants,'def_lik':defaultLikeValue}
     return render(request, 'baseProject/room.html',context)
 
