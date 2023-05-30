@@ -18,3 +18,8 @@ class UserForm(ModelForm):
         model = User
         fields = ['icon','name','surname','username','email','status','showFriendsMessages']
 
+class MessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['body','image']
+

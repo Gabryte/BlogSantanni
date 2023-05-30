@@ -141,7 +141,7 @@ def room(request, pk):
     participants = room.participants.all()
     if request.method == 'POST':
         if request.user.is_authenticated:
-                if not request.POST.get('body'):#TODO check for image
+                if not request.POST.get('body') and not request.POST.get('image'):#TODO check for image
                     return redirect('room',pk=room.id)
                 else:
                     message = Message.objects.create(
