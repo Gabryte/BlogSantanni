@@ -119,6 +119,11 @@
                                         {% endif %}
                                     </div>
                                     <div class="thread__details">
+                                        {% if message.image %}
+                                            <img src="{{ message.image.url }}">
+                                        {% elif %}
+
+                                        {% endif %}
                                         {{ message.body }}
                                     </div>
                                     <!-- likes style -->
@@ -149,7 +154,7 @@
 
                                     </style>
                                     <div class="like-containers">
-                                        <form action="{% url 'room' room.id%}" method="GET">
+                                        <form action="{% url 'room' room.id %}" method="GET">
                                             {% if request.user in message.likes.all %}
                                                 <button name="q" value="{{ message.id }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
@@ -159,7 +164,7 @@
                                                     </svg>
                                                 </button>
                                             {% else %}
-                                                <button name="q" value="{{message.id}}">
+                                                <button name="q" value="{{ message.id }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                                                          fill="currentColor" class="bi bi-hand-thumbs-up"
                                                          viewBox="0 0 16 16">
@@ -171,7 +176,7 @@
                                         </form>
 
                                         <p>{{ message.likes.count }}<p>
-                                            <small>Likes</small>
+                                        <small>Likes</small>
 
                                     </div>
 
@@ -181,9 +186,10 @@
                     </div>
                 </div>
                 <div class="comment_channel">
-                    <form method="POST" action="">
+                    <form method="POST" action="" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="text" name="body" placeholder="Write your message..."/>
+                        <input class="file-upload" type="image" name="image"/>
                     </form>
                 </div>
             </div>

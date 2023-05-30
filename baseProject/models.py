@@ -43,6 +43,7 @@ class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
+    image = models.ImageField(null=True, blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='comment')
@@ -51,3 +52,4 @@ class Message(models.Model):
 
     def __str__(self):
         return self.body[0:50]
+

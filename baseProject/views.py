@@ -141,13 +141,14 @@ def room(request, pk):
     participants = room.participants.all()
     if request.method == 'POST':
         if request.user.is_authenticated:
-                if not request.POST.get('body'):
+                if not request.POST.get('body'):#TODO check for image
                     return redirect('room',pk=room.id)
                 else:
                     message = Message.objects.create(
                         user=request.user,
                         room=room,
-                        body=request.POST.get('body')
+                        body=request.POST.get('body'),
+                        image=request.POST.get('image')
                     )
                     room.participants.add(request.user)
                     return redirect('room', pk=room.id)
@@ -172,7 +173,7 @@ def room(request, pk):
     return render(request, 'baseProject/room.html',context)
 
 
-@login_required(login_url='loginPage')
+@login_required(login_url='loginPage')#TODO possible change instead of decorator
 def userProfile(request, pk):
     page = 'userProfile'
     user = User.objects.get(id=pk)
@@ -308,7 +309,7 @@ def argumentsPage(request):
     context={'arguments':arguments}
     return render(request,'baseProject/arguments.html',context)
 
-
+@login_required(login_url='loginPage')
 def requestFriend(request,pk):
     recipient_user = get_object_or_404(User,id=pk)
     sender_user = request.user
