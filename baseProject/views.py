@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Room, Topic, Message, User, FriendshipRequest
-from .forms import RoomForm, UserForm,UserRegistrationForm
+from .forms import RoomForm, UserForm, UserRegistrationForm, MessageForm
 from django.db.models import Q, Count, Sum
 from django.contrib.auth.decorators import login_required
 
@@ -139,18 +139,19 @@ def room(request, pk):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room_messages = room.message_set.all()
     participants = room.participants.all()
+
     if request.method == 'POST':
         if request.user.is_authenticated:
                 if not request.POST.get('body') and not request.POST.get('image'):#TODO check for image
                     return redirect('room',pk=room.id)
                 else:
-                    message = Message.objects.create(
-                        user=request.user,
-                        room=room,
-                        body=request.POST.get('body'),
-                        image=request.POST.get('image')
-                    )
-                    room.participants.add(request.user)
+                    form = MessageForm(request.POST,request.FILES)
+                    if form.is_valid():
+                        msg = form.save(commit=False)
+                        msg.user = request.user
+                        msg.room = room
+                        msg.save()
+                        room.participants.add(request.user)
                     return redirect('room', pk=room.id)
         else:
             return redirect('loginPage')
