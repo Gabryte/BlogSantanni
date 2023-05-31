@@ -66,7 +66,7 @@
                         <div class="room__hosted">
                             <p>Hosted By</p>
                             <a href="{% url 'user-profile' room.host.id %}" class="room__author">
-                                {% if room.host.is_authenticated %}
+                                {% if room.host.online %}
                                     <div class="avatar avatar--small active">
                                         <img src="{{ room.host.icon.url }}"/>
                                     </div>
@@ -91,7 +91,7 @@
                                         <div class="thread__author">
                                             <a href="{% url 'user-profile' message.user.id %}"
                                                class="thread__authorInfo">
-                                                {% if message.user.is_authenticated %}
+                                                {% if message.user.online %}
                                                     <div class="avatar avatar--small active">
                                                         <img src="{{ message.user.icon.url }}"/>
                                                     </div>
@@ -165,9 +165,7 @@
                                                     </svg>
                                                 </button>
                                             {% endif %}
-
                                         </form>
-
                                         <p class="counter-like">{{ message.likes.count }}<p>
                                         <small>Likes</small>
                                     </div>
@@ -193,7 +191,7 @@
                 <div class="participants__list scroll">
                     {% for user in participants %}
                         <a href="{% url 'user-profile' user.id %}" class="participant">
-                            {% if user.is_authenticated %}
+                            {% if user.online %}
                                 <div class="avatar avatar--medium active">
                                     <img src="{{ user.icon.url }}"/>
                                 </div>

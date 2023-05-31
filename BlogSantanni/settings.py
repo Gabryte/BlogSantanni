@@ -61,6 +61,25 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'BlogSantanni.urls'
 
+MIDDLEWARE_CLASSES = (
+
+    'baseProject.activeuser_middleware.ActiveUserMiddleware',
+
+)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache'
+    }
+}
+# Number of seconds of inactivity before a user is marked offline
+USER_ONLINE_TIMEOUT = 300
+
+# Number of seconds that it will keep track of inactive users for before
+# their last seen is removed from the cache
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

@@ -934,7 +934,13 @@ a {
   color: var(--obscure-color-light);
 }
 
-.room,
+.room {
+  background: var(--obscure-color);
+  max-height: 98vh;
+  border-radius: 0.7rem;
+  overflow: hidden;
+  position: relative;
+}
 .participants {
   background: var(--obscure-color);
   max-height: 87.5vh;
@@ -1007,8 +1013,8 @@ a {
   background: var(--obscure-color);
   z-index: 999;
   top: 4.4rem;
-  padding-top: 2rem;
-  padding-bottom: 1rem;
+  padding-top: 1rem;
+ /* padding-bottom: 1rem;*//*TODO CHECK*/
 }
 
 @media screen and (max-width: 500px) {
@@ -1083,9 +1089,9 @@ a {
 }
 
 .room__conversation {
-  margin-top: 1rem;
-  margin-bottom: 4rem;
-  height: 64%;
+  /*margin-top: 1rem;*/
+  margin-bottom: 1rem;/*4rem TODO CHECK*/
+  height: 64%;/*64% TODO CHECK*/
 }
 
 .threads h3 {
@@ -1106,8 +1112,8 @@ a {
 .thread {
   border-left: 2px solid var(--obscure-color);
   padding-left: 1rem;
-  margin: 2rem 0;
-  padding: 2rem;
+  margin: 1rem 0;/*2rem 0 TODO CHECK*/
+  padding: 1rem;/*2rem TODO CHECK*/
 }
 
 .thread__top {
@@ -1139,12 +1145,15 @@ a {
 }
 
 .comment_channel {
-  padding: 2rem;
   position: absolute;
   z-index: 111;
   bottom: 0;
   left: 0;
   right: 0;
+  padding-left: 3rem;
+  padding-right: 3rem;/*TODO*/
+  padding-top: 3rem;
+  padding-bottom: 0.5rem;
   background: transparent;
 }
 

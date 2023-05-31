@@ -2,6 +2,9 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import  AbstractUser
+from django.core.cache import cache
+import datetime
+from BlogSantanni import settings
 
 # Create your models here.
 class User(AbstractUser):
@@ -13,6 +16,22 @@ class User(AbstractUser):
     showFriendsMessages = models.BooleanField(default=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def last_seen(self):
+        return cache.get('seen_%s' % self.email)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(
+                    seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
+
+
 
 class FriendshipRequest(models.Model):
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
