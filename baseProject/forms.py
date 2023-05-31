@@ -5,7 +5,7 @@ from .models import Room, Topic, Message,User
 class RoomForm(ModelForm):
     class Meta:
         model = Room
-        fields = "__all__"
+        fields = ['topic','name','description','friendsOnly']
         exclude = ['host','participants']
 
 class UserRegistrationForm(UserCreationForm):

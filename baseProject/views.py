@@ -168,7 +168,7 @@ def room(request, pk):
                         room.participants.add(request.user)
                     return redirect('room', pk=room.id)
             else:
-                #TODO add message that you are not friends with host
+                return render(request, 'baseProject/notFriends.html', {'room': room})
 
         else:
             return redirect('loginPage')
@@ -241,6 +241,11 @@ def createRoom(request):
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
         topic, created = Topic.objects.get_or_create(name=topic_name)  # Creates the topic if doesn't find the topic
+        friends = request.POST.get('friendsOnly')
+        if friends == 'on':
+            friends = True
+        else:
+            friends = False
         # form = RoomForm(request.POST)
         # if form.is_valid():
         #    room = form.save(commit=False)
@@ -252,6 +257,7 @@ def createRoom(request):
             topic=topic,
             name=request.POST.get('name'),
             description=request.POST.get('description'),
+            friendsOnly=friends
         ).participants.add(request.user)
 
         return redirect('home')
@@ -288,7 +294,7 @@ def deleteRoomAndTopicRelatedIf(request, pk):
 
     if request.method == "POST":
         room.delete()
-        if (topic.room_set.count() == 0):
+        if topic.room_set.count() == 0:
             topic.delete()
         return redirect('home')
     context = {'obj': room}
