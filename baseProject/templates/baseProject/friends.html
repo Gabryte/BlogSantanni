@@ -54,7 +54,7 @@
                                 <form method="post" action="{% url 'delete-friend' friend.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="recipient_id" value="{{ friend.id }}">
-                                    <button class="btn btn-pill" type="submit">Delete Friend</button>
+                                    <button class="btn btn--pill" type="submit">Delete Friend</button>
                                 </form>
                             {% endif %}
                         {% endfor %}
@@ -81,7 +81,7 @@
                                 <form method="post" action="{% url 'accept-friend' requestUser.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="recipient_id" value="{{ requestUser.id }}">
-                                    <button class="btn btn-pill" type="submit">Accept Friend</button>
+                                    <button class="btn btn--pill" type="submit">Accept Friend</button>
                                 </form>
                                 <form method="post" action="{% url 'delete-friend' requestUser.id %}">
                                     {% csrf_token %}

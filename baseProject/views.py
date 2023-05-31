@@ -155,7 +155,9 @@ def room(request, pk):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
+            #TODO not working private channel
             if not room.friendsOnly or (room.friendsOnly and checkIfFriends(request, room.host)):
+
                 if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
                     return redirect('room', pk=room.id)
                 else:
@@ -169,7 +171,6 @@ def room(request, pk):
                     return redirect('room', pk=room.id)
             else:
                 return render(request, 'baseProject/notFriends.html', {'room': room})
-
         else:
             return redirect('loginPage')
     elif request.method == 'GET':
