@@ -30,6 +30,7 @@ class Room(models.Model):
     topic = models.ForeignKey(Topic, null=True, blank=True,on_delete=models.SET_NULL)
     name = models.CharField(max_length=200, unique=True)
     description = models.TextField(null=True, blank=True)
+    friendsOnly = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 

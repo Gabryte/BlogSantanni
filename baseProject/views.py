@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,12 +8,11 @@ from django.db.models import Q, Count, Sum
 from django.contrib.auth.decorators import login_required
 
 
-
 # Create your views here.
 
 
 def loginPage(request):
-    page ='login'
+    page = 'login'
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -31,17 +30,19 @@ def loginPage(request):
         else:
             messages.error(request, 'Email or password is incorrect')
 
-    context = {'page':page}
-    return render(request, 'baseProject/loginAndRegister.html',context)
+    context = {'page': page}
+    return render(request, 'baseProject/loginAndRegister.html', context)
+
 
 def logoutUser(request):
     logout(request)
     return redirect('loginPage')
 
+
 def registerUser(request):
-    #if request.user.is_authenticated:
+    # if request.user.is_authenticated:
     #    return redirect('home')
-    #context={'page':page}
+    # context={'page':page}
     form = UserRegistrationForm()
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -53,42 +54,54 @@ def registerUser(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Username already exists or the password given does not match the password creation criteria')
-    context = {'form':form}
-    return render(request, 'baseProject/loginAndRegister.html',context)
+            messages.error(request,
+                           'Username already exists or the password given does not match the password creation criteria')
+    context = {'form': form}
+    return render(request, 'baseProject/loginAndRegister.html', context)
+
 
 def userSearch(request):
     page = 'userSearch'
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    users = User.objects.filter(Q(username__icontains=q) | Q(email__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
+    users = User.objects.filter(
+        Q(username__icontains=q) | Q(email__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
     num = 5
     topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by(
         '-num_participants', '-num_rooms')[0:num]
     total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
     rooms_count = 0
     room_messages = None
-    searched_users_messages = Message.objects.filter(Q(user__username__icontains=q) | Q(user__email__icontains=q) | Q(user__name__icontains=q) | Q(user__surname__icontains=q))
+    searched_users_messages = Message.objects.filter(
+        Q(user__username__icontains=q) | Q(user__email__icontains=q) | Q(user__name__icontains=q) | Q(
+            user__surname__icontains=q))
 
     friend_messages, requestFriendsExists = checkForFriendsMessages(request)
 
-    context = {'searched_users_messages':searched_users_messages,'users':users,'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
-               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,"requestFriendsExists":requestFriendsExists}
+    context = {'searched_users_messages': searched_users_messages, 'users': users, 'topics': topic,
+               'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
+               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,
+               "requestFriendsExists": requestFriendsExists}
     return render(request, 'baseProject/home.html', context)
+
 
 def home(request):
     page = 'home'
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    rooms = Room.objects.filter(Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)).order_by('-updated')
     num = 5
-    topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by('-num_participants', '-num_rooms')[0:num]
+    topic = Topic.objects.annotate(num_participants=Count('room__participants'), num_rooms=Count('room')).order_by(
+        '-num_participants', '-num_rooms')[0:num]
     total_participants = topic.aggregate(total_participants=Sum('num_participants')).get('total_participants', 0)
     rooms_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
 
     friend_messages, requestFriendsExists = checkForFriendsMessages(request)
 
-    context = {'rooms':rooms, 'topics':topic, 'rooms_count':rooms_count, 'room_messages':room_messages,"num":num,"total_participants":total_participants,"friend_messages":friend_messages,"page":page,"requestFriendsExists":requestFriendsExists}
-    return render(request, 'baseProject/home.html',context)
+    context = {'rooms': rooms, 'topics': topic, 'rooms_count': rooms_count, 'room_messages': room_messages, "num": num,
+               "total_participants": total_participants, "friend_messages": friend_messages, "page": page,
+               "requestFriendsExists": requestFriendsExists}
+    return render(request, 'baseProject/home.html', context)
 
 
 def checkForFriendsMessages(request):
@@ -135,17 +148,18 @@ def checkForFriendsMessages(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    defaultLikeValue = False
+    defaultLikeValue = True
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     room_messages = room.message_set.all()
     participants = room.participants.all()
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-                if not request.POST.get('body') and not request.POST.get('image'):#TODO check for image
-                    return redirect('room',pk=room.id)
+            if not room.friendsOnly or (room.friendsOnly and checkIfFriends(request.user, room.host)):
+                if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
+                    return redirect('room', pk=room.id)
                 else:
-                    form = MessageForm(request.POST,request.FILES)
+                    form = MessageForm(request.POST, request.FILES)
                     if form.is_valid():
                         msg = form.save(commit=False)
                         msg.user = request.user
@@ -153,6 +167,9 @@ def room(request, pk):
                         msg.save()
                         room.participants.add(request.user)
                     return redirect('room', pk=room.id)
+            else:
+                #TODO add message that you are not friends with host
+
         else:
             return redirect('loginPage')
     elif request.method == 'GET':
@@ -162,19 +179,19 @@ def room(request, pk):
                 if msgToLike:
                     if msgToLike.likes.filter(id=request.user.id).exists():
                         msgToLike.likes.remove(request.user)
-                        defaultLikeValue = False
+                        defaultLikeValue = True
                     else:
                         msgToLike.likes.add(request.user)
-                        defaultLikeValue = True
+                        defaultLikeValue = False
                 return redirect('room', pk=room.id)
         else:
             return redirect('loginPage')
 
-    context = {'room':room, 'room_messages':room_messages, 'participants':participants,'def_lik':defaultLikeValue}
-    return render(request, 'baseProject/room.html',context)
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants, 'def_lik': defaultLikeValue}
+    return render(request, 'baseProject/room.html', context)
 
 
-@login_required(login_url='loginPage')#TODO possible change instead of decorator
+@login_required(login_url='loginPage')  # TODO possible change instead of decorator
 def userProfile(request, pk):
     page = 'userProfile'
     user = User.objects.get(id=pk)
@@ -194,7 +211,7 @@ def userProfile(request, pk):
         to_user=userSearched,
     ).exists()
 
-    if(can_send == True):#if someone else have already made the request
+    if (can_send == True):  # if someone else have already made the request
         can_send = not FriendshipRequest.objects.filter(
             to_user=userRequester,
             from_user=userSearched,
@@ -202,8 +219,10 @@ def userProfile(request, pk):
 
     alreadyFriends = checkIfFriends(request, userSearched)
 
-    context = {'user':user, 'rooms':rooms, 'room_messages':room_messages, 'topics':topics,"num":num,"total_participants":total_participants,"page":page,"can_send":can_send,"alreadyFriends":alreadyFriends}
-    return render(request, 'baseProject/profile.html',context)
+    context = {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics, "num": num,
+               "total_participants": total_participants, "page": page, "can_send": can_send,
+               "alreadyFriends": alreadyFriends}
+    return render(request, 'baseProject/profile.html', context)
 
 
 def checkIfFriends(request, userSearched):
@@ -221,9 +240,9 @@ def createRoom(request):
 
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
-        topic, created = Topic.objects.get_or_create(name=topic_name)#Creates the topic if doesn't find the topic
-        #form = RoomForm(request.POST)
-        #if form.is_valid():
+        topic, created = Topic.objects.get_or_create(name=topic_name)  # Creates the topic if doesn't find the topic
+        # form = RoomForm(request.POST)
+        # if form.is_valid():
         #    room = form.save(commit=False)
         #    room.host = request.user
         #    room.save()
@@ -233,10 +252,12 @@ def createRoom(request):
             topic=topic,
             name=request.POST.get('name'),
             description=request.POST.get('description'),
-        )
+        ).participants.add(request.user)
+
         return redirect('home')
-    context = {'form':form, 'topics':topics}
-    return render(request, 'baseProject/room_form.html',context)
+    context = {'form': form, 'topics': topics}
+    return render(request, 'baseProject/room_form.html', context)
+
 
 @login_required(login_url='loginPage')
 def updateRoom(request, pk):
@@ -254,12 +275,12 @@ def updateRoom(request, pk):
         room.topic = topic
         room.save()
         return redirect('home')
-    context = {'form':form, 'topics':topics, 'room':room}
-    return render(request, 'baseProject/room_form.html',context)
+    context = {'form': form, 'topics': topics, 'room': room}
+    return render(request, 'baseProject/room_form.html', context)
+
 
 @login_required(login_url='loginPage')
 def deleteRoomAndTopicRelatedIf(request, pk):
-
     room = Room.objects.get(id=pk)
     topic = room.topic
     if request.user != room.host:
@@ -270,49 +291,50 @@ def deleteRoomAndTopicRelatedIf(request, pk):
         if (topic.room_set.count() == 0):
             topic.delete()
         return redirect('home')
-    context = {'obj':room}
-    return render(request, 'baseProject/delete.html',context)
+    context = {'obj': room}
+    return render(request, 'baseProject/delete.html', context)
 
 
 @login_required(login_url='loginPage')
 def deleteComment(request, pk):
-
     message = Message.objects.get(id=pk)
     if request.user != message.user:
         return HttpResponse('You are not allowed here!')
 
     if request.method == "POST":
         message.delete()
-        return redirect('home')#TODO CHANGE
-    context = {'obj':message}
-    return render(request, 'baseProject/delete.html',context)
+        return redirect('home')  # TODO CHANGE
+    context = {'obj': message}
+    return render(request, 'baseProject/delete.html', context)
+
 
 @login_required(login_url='loginPage')
 def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
     if request.method == 'POST':
-        form = UserForm(request.POST,request.FILES, instance=user)
+        form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('user-profile', pk=user.id)
-    return render(request, 'baseProject/update-user.html',{'form':form})
+    return render(request, 'baseProject/update-user.html', {'form': form})
 
 
 def usersMessages(request):
     channel_messages = Message.objects.all()[0:3]
-    return render(request, 'baseProject/messagesFromBlogging.html',{'room_messages':channel_messages})
+    return render(request, 'baseProject/messagesFromBlogging.html', {'room_messages': channel_messages})
 
 
 def argumentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     arguments = Topic.objects.filter(name__icontains=q).annotate(num_rooms=Count('room')).order_by('-num_rooms')
-    context={'arguments':arguments}
-    return render(request,'baseProject/arguments.html',context)
+    context = {'arguments': arguments}
+    return render(request, 'baseProject/arguments.html', context)
+
 
 @login_required(login_url='loginPage')
-def requestFriend(request,pk):
-    recipient_user = get_object_or_404(User,id=pk)
+def requestFriend(request, pk):
+    recipient_user = get_object_or_404(User, id=pk)
     sender_user = request.user
 
     friendship_request = FriendshipRequest.objects.create(
@@ -320,7 +342,8 @@ def requestFriend(request,pk):
         to_user=recipient_user,
     )
 
-    return redirect('user-profile',pk=recipient_user.id)
+    return redirect('user-profile', pk=recipient_user.id)
+
 
 @login_required(login_url='loginPage')
 def friends(request):
@@ -328,15 +351,19 @@ def friends(request):
 
     friendsOfUser = getUserFriends(request)
 
-    friendsOfUser = friendsOfUser.filter( Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q)).order_by('username')
+    friendsOfUser = friendsOfUser.filter(
+        Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(
+            email__icontains=q)).order_by('username')
 
     listOfRequests = getUserFriendshipRequests(request)
 
-    listOfRequests = listOfRequests.filter( Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(email__icontains=q)).order_by('username')
+    listOfRequests = listOfRequests.filter(
+        Q(username__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(
+            email__icontains=q)).order_by('username')
 
-    context={'friends':friendsOfUser,'requestUsers':listOfRequests}
+    context = {'friends': friendsOfUser, 'requestUsers': listOfRequests}
 
-    return render(request,'baseProject/friends.html',context)
+    return render(request, 'baseProject/friends.html', context)
 
 
 def getUserFriendshipRequests(request):
@@ -379,9 +406,9 @@ def getUserFriends(request):
     return friendsOfUser
 
 
-def deleteFriend(request,pk):
+def deleteFriend(request, pk):
     userNav = request.user
-    userRec = get_object_or_404(User,id=pk)
+    userRec = get_object_or_404(User, id=pk)
     FriendshipRequest.objects.filter(
         from_user__in=[userNav, userRec],
         to_user__in=[userNav, userRec]
@@ -389,9 +416,9 @@ def deleteFriend(request,pk):
     return redirect('friends')
 
 
-def acceptFriend(request,pk):
+def acceptFriend(request, pk):
     FriendshipRequest.objects.filter(
         from_user_id=pk,
-        to_user_id = request.user.id
+        to_user_id=request.user.id
     ).update(accepted=True)
     return redirect('friends')
