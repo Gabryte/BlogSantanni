@@ -146,6 +146,20 @@ def checkForFriendsMessages(request):
     return friend_messages, requestFriendsExists
 
 
+def friendCheck(request, pk):
+    # TODO not working private channel
+    if request.user.is_authenticated:
+        room = Room.objects.get(id=pk)
+        if(room.friendsOnly == False):
+            return redirect('room', pk=room.id)
+        else:
+            if(checkIfFriends(request, room.host) == True):
+                return redirect('room', pk=room.id)
+            else:
+                return render(request, 'baseProject/notFriends.html', {'room': room})
+    else:
+        return redirect('loginPage')
+
 def room(request, pk):
     room = Room.objects.get(id=pk)
     defaultLikeValue = True
@@ -155,22 +169,19 @@ def room(request, pk):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-            #TODO not working private channel
-            if not room.friendsOnly or (room.friendsOnly and checkIfFriends(request, room.host)):
 
-                if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
-                    return redirect('room', pk=room.id)
-                else:
-                    form = MessageForm(request.POST, request.FILES)
-                    if form.is_valid():
-                        msg = form.save(commit=False)
-                        msg.user = request.user
-                        msg.room = room
-                        msg.save()
-                        room.participants.add(request.user)
-                    return redirect('room', pk=room.id)
+            if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
+                return redirect('room', pk=room.id)
             else:
-                return render(request, 'baseProject/notFriends.html', {'room': room})
+                form = MessageForm(request.POST, request.FILES)
+                if form.is_valid():
+                    msg = form.save(commit=False)
+                    msg.user = request.user
+                    msg.room = room
+                    msg.save()
+                    room.participants.add(request.user)
+                return redirect('room', pk=room.id)
+
         else:
             return redirect('loginPage')
     elif request.method == 'GET':

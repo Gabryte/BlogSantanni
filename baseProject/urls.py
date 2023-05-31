@@ -22,4 +22,5 @@ urlpatterns = [
     path('friends/',views.friends,name="friends"),
     path('delete-friend/<str:pk>',views.deleteFriend,name='delete-friend'),
     path('accept-friend/<str:pk>',views.acceptFriend,name='accept-friend'),
+    path('check/<str:pk>',views.friendCheck,name='check'),
 ]

@@ -23,7 +23,7 @@
                     </a>
                 </div>
                 <div class="BoxingContentActivities">
-                    <p>replied to post “<a href="{% url 'room' activity.room.id %}">{{ activity.room }}</a>”</p>
+                    <p>replied to post “<a href="{% url 'check' activity.room.id %}">{{ activity.room }}</a>”</p>
                     <div class="ActivitiesBoxingRoomChannelContent">
                         {{ activity.body }}
                     </div>
@@ -76,7 +76,7 @@
                         {% endif %}
                     </div>
                     <div class="BoxingContentActivities">
-                        <p>replied to post “<a href="{% url 'room' activity.room.id %}">{{ activity.room }}</a>”</p>
+                        <p>replied to post “<a href="{% url 'check' activity.room.id %}">{{ activity.room }}</a>”</p>
                         <div class="ActivitiesBoxingRoomChannelContent">
                             {{ activity.body }}
                         </div>
@@ -117,7 +117,7 @@
                         {% endif %}
                     </div>
                     <div class="BoxingContentActivities">
-                        <p>replied to post “<a href="{% url 'room' activity.room.id %}">{{ activity.room }}</a>”</p>
+                        <p>replied to post “<a href="{% url 'check' activity.room.id %}">{{ activity.room }}</a>”</p>
                         <div class="ActivitiesBoxingRoomChannelContent">
                             {{ activity.body }}
                         </div>

@@ -778,6 +778,17 @@ a {
   background: var(--obscure-color);
   border-radius: 5px;
   overflow: hidden;
+  overflow-y: auto;
+}
+
+.LastMessagesFromUsers::-webkit-scrollbar {
+  width: 0.6rem;
+  background-color: rgb(41, 41, 46);
+}
+
+.LastMessagesFromUsers::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray);
+  border-radius: 1rem;
 }
 
 .activities__header h2 {
@@ -795,19 +806,7 @@ a {
   padding: 1.5rem;
   border: 2px solid var(--obscure-color-medium);
   border-radius: 5px;
-  overflow-y: auto;
 }
-
-.ActivitiesBoxingBox::-webkit-scrollbar {
-  width: 0.6rem;
-  background-color: rgb(41, 41, 46);
-}
-
-.ActivitiesBoxingBox::-webkit-scrollbar-thumb {
-  background-color: var(--color-gray);
-  border-radius: 1rem;
-}
-
 
 .activities__boxHeader p {
   font-size: 1.4rem;
