@@ -128,15 +128,16 @@
                                     <style>
 
                                         .like-containers {
-                                            width: 100px;
-                                            height: auto;
-                                            padding: 10px 10px 10px 10px;
                                             display: flex;
                                             align-items: center;
-                                            justify-content: space-between;
+                                            justify-content: flex-start;
                                             flex-direction: row;
-                                            margin-bottom: 10px;
+                                            margin-bottom: 1px;
 
+                                        }
+                                        .counter-like {
+                                            margin-left: 5px;
+                                            margin-right: 5px;
                                         }
 
                                         .like-containers button {
@@ -144,12 +145,6 @@
                                             color: gold;
                                             border: none;
                                         }
-
-                                        i {
-                                            font-size: 22px;
-                                            cursor: pointer;
-                                        }
-
                                     </style>
                                     <div class="like-containers">
                                         <form action="{% url 'room' room.id %}" method="GET">
@@ -173,9 +168,8 @@
 
                                         </form>
 
-                                        <p>{{ message.likes.count }}<p>
+                                        <p class="counter-like">{{ message.likes.count }}<p>
                                         <small>Likes</small>
-
                                     </div>
 
                                 </div>
