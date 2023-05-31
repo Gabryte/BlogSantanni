@@ -20,6 +20,12 @@
         <div class="ContentChannelRoomList">
             <a href="{% url 'room' room.id %}">{{ room.name }}</a>
             <p>{{ room.description }}</p>
+            <br/>
+            {% if room.friendsOnly %}
+                <p>Private Blog</p>
+            {% else %}
+                <p>Public Blog</p>
+            {% endif %}
         </div>
         <div class="ChannelMetaRoom">
             <a href="{% url 'room' room.id %}" class="ChannelListChannelJoined">

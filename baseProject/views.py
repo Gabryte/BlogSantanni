@@ -155,7 +155,7 @@ def room(request, pk):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-            if not room.friendsOnly or (room.friendsOnly and checkIfFriends(request.user, room.host)):
+            if not room.friendsOnly or (room.friendsOnly and checkIfFriends(request, room.host)):
                 if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
                     return redirect('room', pk=room.id)
                 else:
