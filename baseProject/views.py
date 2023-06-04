@@ -191,15 +191,15 @@ def room(request, pk):
                 if msgToLike:
                     if msgToLike.likes.filter(id=request.user.id).exists():
                         msgToLike.likes.remove(request.user)
-                        defaultLikeValue = True
+
                     else:
                         msgToLike.likes.add(request.user)
-                        defaultLikeValue = False
+
                 return redirect('room', pk=room.id)
         else:
             return redirect('loginPage')
 
-    context = {'room': room, 'room_messages': room_messages, 'participants': participants, 'def_lik': defaultLikeValue}
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
     return render(request, 'baseProject/room.html', context)
 
 
@@ -322,7 +322,7 @@ def deleteComment(request, pk, page, room_id):
     if request.method == "POST":
         message.delete()
         if page == 'blog':
-            return redirect(room,pk=room_id)  # TODO CHANGE
+            return redirect(room,pk=room_id)
         else:
             return redirect('home')
     context = {'obj': message}
