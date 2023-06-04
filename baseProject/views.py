@@ -314,14 +314,17 @@ def deleteRoomAndTopicRelatedIf(request, pk):
 
 
 @login_required(login_url='loginPage')
-def deleteComment(request, pk):
+def deleteComment(request, pk, page, room_id):
     message = Message.objects.get(id=pk)
     if request.user != message.user:
         return HttpResponse('You are not allowed here!')
 
     if request.method == "POST":
         message.delete()
-        return redirect('home')  # TODO CHANGE
+        if page == 'blog':
+            return redirect(room,pk=room_id)  # TODO CHANGE
+        else:
+            return redirect('home')
     context = {'obj': message}
     return render(request, 'baseProject/delete.html', context)
 
