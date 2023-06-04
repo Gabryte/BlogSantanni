@@ -1006,15 +1006,15 @@ a {
 }
 
 .room__header {
-  max-height: 30vh;
+  max-height: 20vh;/*TODO CHECK 30vh*/
   overflow-y: auto;
-  position: absolute;
+  /*position: absolute;*//*TODO CHECK*/
   width: 95%;
   background: var(--obscure-color);
   z-index: 999;
   top: 4.4rem;
   padding-top: 1rem;
- /* padding-bottom: 1rem;*//*TODO CHECK*/
+  padding-bottom: 1rem;/*TODO CHECK*/
 }
 
 @media screen and (max-width: 500px) {
@@ -1025,6 +1025,8 @@ a {
 }
 
 .room__box {
+  display: flex;/*TODO CHECK*/
+  flex-direction: column;/*TODO CHECK*/
   padding-left: 2rem;
   padding-right: 2rem;
   height: 80.5vh;
@@ -1152,7 +1154,7 @@ a {
   right: 0;
   padding-left: 3rem;
   padding-right: 3rem;/*TODO*/
-  padding-top: 3rem;
+  /*padding-top: 3rem;*//*TODO CHECK*/
   padding-bottom: 0.5rem;
   background: transparent;
 }
