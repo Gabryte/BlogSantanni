@@ -1006,9 +1006,9 @@ a {
 }
 
 .room__header {
-  max-height: 20vh;/*TODO CHECK 30vh*/
+  max-height: 30vh;/*TODO CHECK 30vh*/
   overflow-y: auto;
-  /*position: absolute;*//*TODO CHECK*/
+  position: absolute;/*TODO CHECK*/
   width: 95%;
   background: var(--obscure-color);
   z-index: 999;
@@ -1025,8 +1025,9 @@ a {
 }
 
 .room__box {
-  display: flex;/*TODO CHECK*/
-  flex-direction: column;/*TODO CHECK*/
+  /*display: flex;/*TODO CHECK*/
+  /*flex-direction: column;/*TODO CHECK*/
+  /*align-content: stretch;/*TODO CHECK*/
   padding-left: 2rem;
   padding-right: 2rem;
   height: 80.5vh;
@@ -1154,7 +1155,7 @@ a {
   right: 0;
   padding-left: 3rem;
   padding-right: 3rem;/*TODO*/
-  /*padding-top: 3rem;*//*TODO CHECK*/
+  padding-top: 3rem;/*TODO CHECK*/
   padding-bottom: 0.5rem;
   background: transparent;
 }
