@@ -1025,9 +1025,6 @@ a {
 }
 
 .room__box {
-  /*display: flex;/*TODO CHECK*/
-  /*flex-direction: column;/*TODO CHECK*/
-  /*align-content: stretch;/*TODO CHECK*/
   padding-left: 2rem;
   padding-right: 2rem;
   height: 80.5vh;
@@ -1093,7 +1090,7 @@ a {
 
 .room__conversation {
   /*margin-top: 1rem;*/
-  margin-bottom: 1rem;/*4rem TODO CHECK*/
+  margin-bottom: 4rem;/*4rem TODO CHECK*/
   height: 64%;/*64% TODO CHECK*/
 }
 
