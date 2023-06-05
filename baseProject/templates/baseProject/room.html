@@ -216,10 +216,10 @@
     </main>
     <script>
     // Check if the URL parameter 'scroll_to_bottom' is present
-    var urlParams = new URLSearchParams(window.location.search);
-    var scrollParam = urlParams.get('scroll_to_bottom');
+    // var urlParams = new URLSearchParams(window.location.search);
+    // var scrollParam = urlParams.get('scroll_to_bottom');
 
-    if (scrollParam === 'true') {
+    /*if (scrollParam === 'true') {*/
         // Scroll to the bottom of the page after it has loaded
         window.addEventListener('load', function() {
             var bottomAnchor = document.getElementById('bottom');
@@ -227,7 +227,7 @@
                 bottomAnchor.scrollIntoView();
             }
         });
-    }
+    /*}*/
 </script>
 
 {% endblock content %}
