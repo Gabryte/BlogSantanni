@@ -1,5 +1,5 @@
 {% if requestFriendsExists and request.user.showFriendsMessages == True %}
-    <div class="LastMessagesFromUsers">
+    <div class="LastMessagesFromUsers scroll"> <!-- scroll TODO -->
         <div class="layout__boxHeader">
             <h2>Friend Messages</h2>
         </div>
@@ -33,7 +33,7 @@
 
     </div>
 {% else %}
-    <div class="LastMessagesFromUsers">
+    <div class="LastMessagesFromUsers scroll"> <!-- scroll TODO -->
         <div class="layout__boxHeader">
             {% if page == 'userSearch' %}
                 <h2>Recent Searched Users Messages</h2>

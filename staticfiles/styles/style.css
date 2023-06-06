@@ -779,6 +779,7 @@ a {
   border-radius: 5px;
   overflow: hidden;
   overflow-y: auto;
+  max-height: 40rem; /* 640px TODO*/
 }
 
 .LastMessagesFromUsers::-webkit-scrollbar {
@@ -1006,7 +1007,7 @@ a {
 }
 
 .room__header {
-  max-height: 20vh;/*TODO CHECK 30vh*/
+  max-height: 25vh;/*TODO CHECK 30vh*/
   overflow-y: auto;
   position: absolute;/*TODO CHECK*/
   width: 95%;
