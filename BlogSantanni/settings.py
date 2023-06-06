@@ -40,9 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'baseProject',
-    'crispy_forms',
-    'bootstrap4',
-    'crispy_bootstrap4',
     'rest_framework',
     'corsheaders',
 ]
