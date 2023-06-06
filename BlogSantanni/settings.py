@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,13 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e*5o5-8!&54dm=4$kerxc5((rxp-v2vj9bj724o4$$#qj-yk(='
-
+#SECRET_KEY = 'django-insecure-e*5o5-8!&54dm=4$kerxc5((rxp-v2vj9bj724o4$$#qj-yk(='
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-e*5o5-8!&54dm=4$kerxc5((rxp-v2vj9bj724o4$$#qj-yk(=')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+#DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
+ALLOWED_HOSTS = ["djangorailway-production.up.railway.app","127.0.0.1","localhost"]
+CSRF_TRUSTED_ORIGINS = ['https://djangorailway-production.up.railway.app']
 
 # Application definition
 
