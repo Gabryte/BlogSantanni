@@ -779,9 +779,9 @@ a {
   border-radius: 5px;
   overflow: hidden;
   overflow-y: auto;
-  max-height: 40rem; /* 640px TODO*/
+  max-height: 1080px; /*TODO*/
 }
-
+/*
 .LastMessagesFromUsers::-webkit-scrollbar {
   width: 0.6rem;
   background-color: rgb(41, 41, 46);
@@ -791,7 +791,7 @@ a {
   background-color: var(--color-gray);
   border-radius: 1rem;
 }
-
+*/
 .activities__header h2 {
   background-color: var(--obscure-color-light);
   text-transform: uppercase;
