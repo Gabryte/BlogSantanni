@@ -779,7 +779,7 @@ a {
   border-radius: 5px;
   overflow: hidden;
   overflow-y: auto;
-  max-height: 1080px; /*TODO*/
+  max-height: 1000px; /*TODO*/
 }
 /*
 .LastMessagesFromUsers::-webkit-scrollbar {

@@ -147,7 +147,6 @@ def checkForFriendsMessages(request):
 
 
 def friendCheck(request, pk):
-    # TODO not working private channel
     if request.user.is_authenticated:
         room = Room.objects.get(id=pk)
         if(room.friendsOnly == False):
@@ -170,7 +169,7 @@ def room(request, pk):
     if request.method == 'POST':
         if request.user.is_authenticated:
 
-            if not request.POST.get('body') and not request.POST.get('image'):  # TODO check for image
+            if not request.POST.get('body') and not request.POST.get('image'):
                 return redirect('room', pk=room.id)
             else:
                 form = MessageForm(request.POST, request.FILES)
@@ -203,7 +202,7 @@ def room(request, pk):
     return render(request, 'baseProject/room.html', context)
 
 
-@login_required(login_url='loginPage')  # TODO possible change instead of decorator
+@login_required(login_url='loginPage')
 def userProfile(request, pk):
     page = 'userProfile'
     user = User.objects.get(id=pk)
